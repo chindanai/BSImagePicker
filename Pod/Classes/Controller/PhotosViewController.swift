@@ -81,7 +81,7 @@ final class PhotosViewController : UICollectionViewController {
         return PreviewViewController(nibName: nil, bundle: nil)
     }()
     
-    required init(fetchResults: [PHFetchResult<PHAssetCollection>], defaultSelections: [PHAsset? = nil, settings aSettings: BSImagePickerSettings) {
+    required init(fetchResults: [PHFetchResult<PHAssetCollection>], defaultSelections: [PHAsset]? = nil, settings aSettings: BSImagePickerSettings) {
         albumsDataSource = AlbumTableViewDataSource(fetchResults: fetchResults)
         cameraDataSource = CameraCollectionViewDataSource(settings: aSettings, cameraAvailable: UIImagePickerController.isSourceTypeAvailable(.camera))
         self.defaultSelections = defaultSelections
