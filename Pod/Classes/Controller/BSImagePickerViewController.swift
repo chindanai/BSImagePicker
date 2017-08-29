@@ -46,8 +46,8 @@ open class BSImagePickerViewController : UINavigationController {
     /**
      Default selections
      */
-    open var defaultSelections: PHFetchResult<PHAsset>?
-    
+    open var defaultSelections: [PHAsset]?
+
     /**
      Fetch results.
      */
