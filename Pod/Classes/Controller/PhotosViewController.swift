@@ -93,7 +93,7 @@ final class PhotosViewController : UICollectionViewController {
         PHPhotoLibrary.shared().register(self)
     }
     
-    required init(filteredResults: PHFetchResult<PHAsset>, defaultSelections: PHFetchResult<PHAsset>? = nil, settings aSettings: BSImagePickerSettings) {
+    required init(filteredResults: PHFetchResult<PHAsset>, defaultSelections: [PHAsset]? = nil, settings aSettings: BSImagePickerSettings) {
         cameraDataSource = CameraCollectionViewDataSource(settings: aSettings, cameraAvailable: UIImagePickerController.isSourceTypeAvailable(.camera))
         self.filteredResults = filteredResults
         self.defaultSelections = defaultSelections
