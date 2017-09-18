@@ -68,7 +68,8 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             photosManager.cancelImageRequest(PHImageRequestID(cell.tag))
         }
         
-        let asset = fetchResult[indexPath.row]
+        let reversedIndex = fetchResult.count - indexPath.item - 1
+        let asset = fetchResult[reversedIndex]
         cell.asset = asset
         
         // Request image
