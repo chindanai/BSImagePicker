@@ -313,9 +313,9 @@ final class PhotosViewController : UICollectionViewController {
   func initializePhotosDataSource(_ album: PHAssetCollection, selections: [PHAsset]? = nil) {
         // Set up a photo data source with album
         let fetchOptions = PHFetchOptions()
-        fetchOptions.sortDescriptors = [
-            NSSortDescriptor(key: "creationDate", ascending: false)
-        ]
+//         fetchOptions.sortDescriptors = [
+//             NSSortDescriptor(key: "creationDate", ascending: false)
+//         ]
         fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
         initializePhotosDataSourceWithFetchResult(PHAsset.fetchAssets(in: album, options: fetchOptions), selections: selections)
     }
