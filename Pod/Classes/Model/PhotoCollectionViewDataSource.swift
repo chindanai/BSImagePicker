@@ -37,7 +37,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     let settings: BSImagePickerSettings?
     var imageSize: CGSize = CGSize.zero
     
-  init(fetchResult: PHFetchResult<PHAsset>, selections: [PHAsset]? = nil, settings: BSImagePickerSettings?) {
+    init(fetchResult: PHFetchResult<PHAsset>, selections: [PHAsset]? = nil, settings: BSImagePickerSettings?) {
         self.fetchResult = fetchResult
         self.settings = settings
         if let selections = selections {
@@ -45,6 +45,13 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         }
     
         super.init()
+    }
+    
+    func assetAtIndexPath(_ indexPath: IndexPath) -> PHAsset {
+        let reversedIndex = fetchResult.count - indexPath.item - 1
+        let asset = fetchResult[reversedIndex]
+        
+        return asset
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -68,8 +75,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             photosManager.cancelImageRequest(PHImageRequestID(cell.tag))
         }
         
-        let reversedIndex = fetchResult.count - indexPath.item - 1
-        let asset = fetchResult[reversedIndex]
+        let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
         
         // Request image
