@@ -362,7 +362,7 @@ extension PhotosViewController {
 
         // We need a cell
         guard let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return false }
-        let asset = photosDataSource.fetchResult.assetAtIndexPath(indexPath)
+        let asset = photosDataSource.assetAtIndexPath(indexPath)
 
         // Select or deselect?
         if let index = photosDataSource.selections.index(of: asset) { // Deselect
