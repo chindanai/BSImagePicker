@@ -260,6 +260,15 @@ extension BSImagePickerViewController: BSImagePickerSettings {
             settings.takePhotoIcon = newValue
         }
     }
+    
+    public var enableGif: Bool {
+        get {
+            return settings.enableGif
+        }
+        set {
+            settings.enableGif = newValue
+        }
+    }
 }
 
 // MARK: Album button

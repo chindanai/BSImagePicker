@@ -30,8 +30,15 @@ final class PhotoCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var selectionOverlayView: UIView!
     @IBOutlet weak var selectionView: SelectionView!
+    @IBOutlet fileprivate weak var gifBadge: UIView!
     
     weak var asset: PHAsset?
+    var hiddenGif = false {
+        didSet {
+            updateGifUI()
+        }
+    }
+    
     var settings: BSImagePickerSettings {
         get {
             return selectionView.settings
@@ -71,6 +78,23 @@ final class PhotoCell: UICollectionViewCell {
                 updateAlpha(photoSelected)
             }
         }
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        initUI()
+    }
+    
+    fileprivate func initUI() {
+        gifBadge.layer.cornerRadius = 5.0
+        gifBadge.clipsToBounds = true
+        
+        gifBadge.isHidden = true
+    }
+    
+    fileprivate func updateGifUI() {
+        gifBadge.isHidden = hiddenGif
     }
     
     fileprivate func updateAlpha(_ selected: Bool) {

@@ -27,6 +27,7 @@
 		4071F7E71609F401003D3230893C521E /* BSImagePickerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2F74234312E5953862B5A199F81D277 /* BSImagePickerSettings.swift */; };
 		4546E3FB56F3693D2893B773F71C3097 /* BSImagePicker-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FC4652B08A1600EEE45D96B6712A7A8 /* BSImagePicker-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		49DD0C7E95B1CDB0FFEB5BC2E745BACA /* arrow_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 41434C6C3BB9C93164E3A0B4692BADDF /* arrow_down@2x.png */; };
+		4CAA4AD01F77DF3F004C2C68 /* PHAsset+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CAA4ACF1F77DF3F004C2C68 /* PHAsset+GIF.swift */; };
 		4D84C6E12A0C8733B588B202983465E2 /* CameraCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DD589D627C60080627D1CF75BD9815 /* CameraCollectionViewDataSource.swift */; };
 		4F397C023D1298B181F933E6C3453FE4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01AFC5762A4310C5AC17337E786B6435 /* Foundation.framework */; };
 		543069E7AFC0805EF1CB25199D201424 /* UIImageViewModeScaleAspect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58762805239E3FE5C42C6777A18ECC9F /* UIImageViewModeScaleAspect.framework */; };
@@ -145,6 +146,7 @@
 		418623CC5F10B7B4D8B7120E16C1868E /* GridCollectionViewLayout.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GridCollectionViewLayout.swift; path = Pod/Classes/GridCollectionViewLayout.swift; sourceTree = "<group>"; };
 		425A72440AF028F540D620AFF22B1046 /* Pods-BSImagePicker_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-BSImagePicker_Tests.modulemap"; sourceTree = "<group>"; };
 		42D58003D920CA7BF034E390A20ED51F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		4CAA4ACF1F77DF3F004C2C68 /* PHAsset+GIF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAsset+GIF.swift"; sourceTree = "<group>"; };
 		4F48B3EE9B4A216C557827C03F1A0766 /* UIImageViewModeScaleAspect.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIImageViewModeScaleAspect.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FA0B053CFEEFAF4307FEC563A29E513 /* BSGridCollectionViewLayout-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BSGridCollectionViewLayout-prefix.pch"; sourceTree = "<group>"; };
 		4FB978B9FEC0CABEE194AA66ABA44F42 /* UIImageViewModeScaleAspect-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIImageViewModeScaleAspect-umbrella.h"; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 				D04E1F086FC15C5DDF742625F49058D3 /* NSIndexSet+NSIndexPath.swift */,
 				8FC7047F1964327C5D56E6055AFC0D91 /* UIButton+NoAnimation.swift */,
 				AD7F235E85CC1D27CBECC42310B68266 /* UIViewController+BSImagePicker.swift */,
+				4CAA4ACF1F77DF3F004C2C68 /* PHAsset+GIF.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -804,6 +807,7 @@
 				B1927E98C38A2CDD6C23041D49CADD54 /* CameraCell.swift in Sources */,
 				4D84C6E12A0C8733B588B202983465E2 /* CameraCollectionViewDataSource.swift in Sources */,
 				388C79FE83038778DBEA5D170B49202F /* ComposedCollectionViewDataSource.swift in Sources */,
+				4CAA4AD01F77DF3F004C2C68 /* PHAsset+GIF.swift in Sources */,
 				B79E301617D79296C73248C6279EC78A /* NSIndexSet+NSIndexPath.swift in Sources */,
 				051836FBCF1F0B1968ABC0F2AA7D123A /* PhotoCell.swift in Sources */,
 				1EC10A9CF4C9B064BA5411711E59E580 /* PhotoCollectionViewDataSource.swift in Sources */,
@@ -938,7 +942,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE_SPECIFIER = NO_SIGNING/;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -963,7 +967,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Target Support Files/Pods-BSImagePicker_Example/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-BSImagePicker_Example/Pods-BSImagePicker_Example.modulemap";
@@ -998,7 +1002,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Target Support Files/Pods-BSImagePicker_Tests/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-BSImagePicker_Tests/Pods-BSImagePicker_Tests.modulemap";
@@ -1066,7 +1070,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				PROVISIONING_PROFILE_SPECIFIER = NO_SIGNING/;
 				STRIP_INSTALLED_PRODUCT = NO;
 				SYMROOT = "${SRCROOT}/../build";
@@ -1109,7 +1113,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/BSImagePicker/BSImagePicker-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/BSImagePicker/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/BSImagePicker/BSImagePicker.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1141,7 +1145,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/BSGridCollectionViewLayout/BSGridCollectionViewLayout-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/BSGridCollectionViewLayout/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/BSGridCollectionViewLayout/BSGridCollectionViewLayout.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1173,7 +1177,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/UIImageViewModeScaleAspect/UIImageViewModeScaleAspect-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/UIImageViewModeScaleAspect/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/UIImageViewModeScaleAspect/UIImageViewModeScaleAspect.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1205,7 +1209,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/UIImageViewModeScaleAspect/UIImageViewModeScaleAspect-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/UIImageViewModeScaleAspect/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/UIImageViewModeScaleAspect/UIImageViewModeScaleAspect.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1237,7 +1241,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/BSGridCollectionViewLayout/BSGridCollectionViewLayout-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/BSGridCollectionViewLayout/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/BSGridCollectionViewLayout/BSGridCollectionViewLayout.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1270,7 +1274,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/BSImagePicker/BSImagePicker-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/BSImagePicker/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/BSImagePicker/BSImagePicker.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1302,7 +1306,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Target Support Files/Pods-BSImagePicker_Tests/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-BSImagePicker_Tests/Pods-BSImagePicker_Tests.modulemap";
@@ -1337,7 +1341,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Target Support Files/Pods-BSImagePicker_Example/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-BSImagePicker_Example/Pods-BSImagePicker_Example.modulemap";

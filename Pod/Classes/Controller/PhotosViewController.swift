@@ -49,6 +49,7 @@ final class PhotosViewController : UICollectionViewController {
     var deselectionClosure: ((_ asset: PHAsset) -> Void)?
     var cancelClosure: ((_ assets: [PHAsset]) -> Void)?
     var finishClosure: ((_ assets: [PHAsset]) -> Void)?
+    var finishWithGifClosure: ((_ assets: [PHAsset]) -> Void)?
     
     var doneBarButton: UIBarButtonItem?
     var cancelBarButton: UIBarButtonItem?
@@ -386,6 +387,10 @@ extension PhotosViewController {
 
             cell.photoSelected = false
 
+            if settings.enableGif && photosDataSource.selections.count == 0 {
+                enableGif()
+            }
+            
             // Call deselection closure
             if let closure = deselectionClosure {
                 DispatchQueue.global().async {
@@ -404,15 +409,18 @@ extension PhotosViewController {
             }
 
             cell.photoSelected = true
-
+            
             // Update done button
             updateDoneButton()
 
-            // Call selection closure
-            if let closure = selectionClosure {
-                DispatchQueue.global().async {
-                    closure(asset)
+            if settings.enableGif {
+                if photosDataSource.selections.count == 1 && asset.isGif() {
+                    showDisplayGifOrImageOptions(asset)
+                } else {
+                    selectAssetAsImage(asset)
                 }
+            } else {
+                selectAssetAsImage(asset)
             }
         }
 
@@ -572,5 +580,67 @@ extension PhotosViewController: PHPhotoLibraryChangeObserver {
         
         
         // TODO: Changes in albums
+    }
+}
+
+// Mod's Code
+extension PhotosViewController {
+    fileprivate func showDisplayGifOrImageOptions(_ asset: PHAsset) {
+        let alertController = UIAlertController(title: "", message: "Do you want to display this image as GIF?", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { [weak self] (action) in
+            self?.finishWithSelectGif(asset)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
+            self?.selectAssetAsImage(asset)
+        }
+        
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    fileprivate func disableGif() {
+        if let collectionView = collectionView {
+            
+            for cell in collectionView.visibleCells {
+                let photoCell = cell as? PhotoCell
+                photoCell?.hiddenGif = true
+            }
+        }
+    }
+    
+    fileprivate func enableGif() {
+        if let collectionView = collectionView {
+            for cell in collectionView.visibleCells {
+                let photoCell = cell as? PhotoCell
+                photoCell?.hiddenGif = !(photoCell?.asset?.isGif() ?? false)
+            }
+        }
+    }
+    
+    fileprivate func finishWithSelectGif(_ asset: PHAsset) {
+        guard let closure = finishWithGifClosure else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        
+        DispatchQueue.global().async {
+            closure([asset])
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    fileprivate func selectAssetAsImage(_ asset: PHAsset) {
+        if let closure = selectionClosure {
+            DispatchQueue.global().async {
+                closure(asset)
+            }
+        }
+        
+        if settings.enableGif {
+            disableGif()
+        }
     }
 }

@@ -29,23 +29,28 @@ class ViewController: UIViewController {
     @IBAction func showImagePicker(_ sender: UIButton) {
         let vc = BSImagePickerViewController()
         vc.maxNumberOfSelections = 6
+        vc.settings.enableGif = false
         
-        bs_presentImagePickerController(vc, animated: true,
-            select: { (asset: PHAsset) -> Void in
-                print("Selected: \(asset)")
-            }, deselect: { (asset: PHAsset) -> Void in
-                print("Deselected: \(asset)")
-            }, cancel: { (assets: [PHAsset]) -> Void in
-                print("Cancel: \(assets)")
-            }, finish: { (assets: [PHAsset]) -> Void in
-                print("Finish: \(assets)")
-            }, completion: nil)
+        bs_presentImagePickerController(vc, animated: true, select: { (assets) in
+            print("Selected: \(assets)")
+        }, deselect: { (assets) in
+            print("Selected: \(assets)")
+        }, cancel: { (assets) in
+            print("Selected: \(assets)")
+        }, finishWithGif: { (assets) in
+            print("Selected: \(assets)")
+        }, finish: { (assets) in
+            print("Selected: \(assets)")
+        }) {
+            
+        }
     }
     
     @IBAction func showCustomImagePicker(_ sender: UIButton) {
         let vc = BSImagePickerViewController()
         vc.maxNumberOfSelections = 6
         vc.takePhotoIcon = UIImage(named: "chat")
+        vc.settings.enableGif = true
         
         vc.albumButton.tintColor = UIColor.green
         vc.cancelButton.tintColor = UIColor.red
@@ -68,16 +73,19 @@ class ViewController: UIViewController {
             }
         }
         
-        bs_presentImagePickerController(vc, animated: true,
-            select: { (asset: PHAsset) -> Void in
-                print("Selected: \(asset)")
-            }, deselect: { (asset: PHAsset) -> Void in
-                print("Deselected: \(asset)")
-            }, cancel: { (assets: [PHAsset]) -> Void in
-                print("Cancel: \(assets)")
-            }, finish: { (assets: [PHAsset]) -> Void in
-                print("Finish: \(assets)")
-            }, completion: nil)
+        bs_presentImagePickerController(vc, animated: true, select: { (assets) in
+            print("Selected: \(assets)")
+        }, deselect: { (assets) in
+            print("Selected: \(assets)")
+        }, cancel: { (assets) in
+            print("Selected: \(assets)")
+        }, finishWithGif: { (assets) in
+            print("Selected: \(assets)")
+        }, finish: { (assets) in
+            print("Selected: \(assets)")
+        }) {
+            
+        }
     }
   
     @IBAction func showImagePickerWithSelectedAssets(_ sender: UIButton) {
@@ -90,21 +98,25 @@ class ViewController: UIViewController {
             }
         })
       
-        let evenAssets = PHAsset.fetchAssets(withLocalIdentifiers: evenAssetIds, options: nil)
+//        let evenAssets = PHAsset.fetchAssets(withLocalIdentifiers: evenAssetIds, options: nil)
       
         let vc = BSImagePickerViewController()
-        vc.defaultSelections = evenAssets
+        vc.settings.enableGif = true
+        //vc.defaultSelections = evenAssets
       
-        bs_presentImagePickerController(vc, animated: true,
-          select: { (asset: PHAsset) -> Void in
-            print("Selected: \(asset)")
-          }, deselect: { (asset: PHAsset) -> Void in
-            print("Deselected: \(asset)")
-          }, cancel: { (assets: [PHAsset]) -> Void in
-            print("Cancel: \(assets)")
-          }, finish: { (assets: [PHAsset]) -> Void in
-            print("Finish: \(assets)")
-          }, completion: nil)
+        bs_presentImagePickerController(vc, animated: true, select: { (assets) in
+            print("Selected: \(assets)")
+        }, deselect: { (assets) in
+            print("Selected: \(assets)")
+        }, cancel: { (assets) in
+            print("Selected: \(assets)")
+        }, finishWithGif: { (assets) in
+            print("Selected: \(assets)")
+        }, finish: { (assets) in
+            print("Selected: \(assets)")
+        }) {
+            
+        }
     }
 }
 
