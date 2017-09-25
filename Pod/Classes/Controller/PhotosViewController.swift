@@ -175,16 +175,12 @@ final class PhotosViewController : UICollectionViewController {
     }
     
     func doneButtonPressed(_ sender: UIBarButtonItem) {
-        guard let closure = finishClosure, let photosDataSource = photosDataSource else {
+        guard let photosDataSource = photosDataSource else {
             dismiss(animated: true, completion: nil)
             return
         }
         
-        DispatchQueue.global().async {
-            closure(photosDataSource.selections)
-        }
-        
-        dismiss(animated: true, completion: nil)
+        finishWithAssets(photosDataSource.selections)
     }
     
     func albumButtonPressed(_ sender: UIButton) {
@@ -400,27 +396,35 @@ extension PhotosViewController {
         } else if photosDataSource.selections.count < settings.maxNumberOfSelections { // Select
             // Select asset if not already selected
             photosDataSource.selections.append(asset)
-
-            // Set selection number
-            if let selectionCharacter = settings.selectionCharacter {
-                cell.selectionString = String(selectionCharacter)
-            } else {
-                cell.selectionString = String(photosDataSource.selections.count)
-            }
-
-            cell.photoSelected = true
             
-            // Update done button
-            updateDoneButton()
-
-            if settings.enableGif {
-                if photosDataSource.selections.count == 1 && asset.isGif() {
-                    showDisplayGifOrImageOptions(asset)
+            if settings.multipleSelectionMode {
+                // Set selection number
+                if let selectionCharacter = settings.selectionCharacter {
+                    cell.selectionString = String(selectionCharacter)
+                } else {
+                    cell.selectionString = String(photosDataSource.selections.count)
+                }
+                
+                cell.photoSelected = true
+                
+                // Update done button
+                updateDoneButton()
+                
+                if settings.enableGif {
+                    if photosDataSource.selections.count == 1 && asset.isGif() {
+                        showDisplayGifOrImageOptions(asset)
+                    } else {
+                        selectAssetAsImage(asset)
+                    }
                 } else {
                     selectAssetAsImage(asset)
                 }
             } else {
-                selectAssetAsImage(asset)
+                if settings.enableGif && asset.isGif() {
+                    finishWithSelectGif(asset)
+                } else {
+                    finishWithAssets([asset])
+                }
             }
         }
 
@@ -546,13 +550,13 @@ extension PhotosViewController: PHPhotoLibraryChangeObserver {
                     // Update fetch result
                     photosDataSource.fetchResult = photosChanges.fetchResultAfterChanges as! PHFetchResult<PHAsset>
                     
-                    if let removed = photosChanges.removedIndexes {
-                        collectionView.deleteItems(at: removed.bs_indexPathsForSection(1))
-                    }
+                    //if let removed = photosChanges.removedIndexes {
+                    //    collectionView.deleteItems(at: removed.sdnp_indexPathsForSection(1, fetchResult: photosDataSource.fetchResult))
+                    //}
                     
-                    if let inserted = photosChanges.insertedIndexes {
-                        collectionView.insertItems(at: inserted.bs_indexPathsForSection(1))
-                    }
+                    //if let inserted = photosChanges.insertedIndexes {
+                    //    collectionView.insertItems(at: inserted.sdnp_indexPathsForSection(1, fetchResult: photosDataSource.fetchResult))
+                    //}
                     
                     // Changes is causing issues right now...fix me later
                     // Example of issue:
@@ -619,6 +623,18 @@ extension PhotosViewController {
         }
     }
     
+    fileprivate func selectAssetAsImage(_ asset: PHAsset) {
+        if let closure = selectionClosure {
+            DispatchQueue.global().async {
+                closure(asset)
+            }
+        }
+        
+        if settings.enableGif {
+            disableGif()
+        }
+    }
+    
     fileprivate func finishWithSelectGif(_ asset: PHAsset) {
         guard let closure = finishWithGifClosure else {
             dismiss(animated: true, completion: nil)
@@ -632,15 +648,16 @@ extension PhotosViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    fileprivate func selectAssetAsImage(_ asset: PHAsset) {
-        if let closure = selectionClosure {
-            DispatchQueue.global().async {
-                closure(asset)
-            }
+    fileprivate func finishWithAssets(_ assets: [PHAsset]) {
+        guard let closure = finishClosure else {
+            dismiss(animated: true, completion: nil)
+            return
         }
         
-        if settings.enableGif {
-            disableGif()
+        DispatchQueue.global().async {
+            closure(assets)
         }
+        
+        dismiss(animated: true, completion: nil)
     }
 }

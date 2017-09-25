@@ -269,6 +269,15 @@ extension BSImagePickerViewController: BSImagePickerSettings {
             settings.enableGif = newValue
         }
     }
+    
+    public var multipleSelectionMode: Bool {
+        get {
+            return settings.multipleSelectionMode
+        }
+        set {
+            settings.multipleSelectionMode = newValue
+        }
+    }
 }
 
 // MARK: Album button

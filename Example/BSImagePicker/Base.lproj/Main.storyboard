@@ -21,8 +21,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uhZ-hb-lFL">
-                                <rect key="frame" x="51.5" y="241.5" width="272" height="183.5"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F9e-RO-5Gk">
+                                <rect key="frame" x="51" y="223" width="272" height="222"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GFw-cP-rmQ">
                                         <rect key="frame" x="92" y="20" width="88" height="30"/>
@@ -53,25 +53,33 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PST-W9-dyD">
-                                        <rect key="frame" x="61.5" y="133.5" width="148" height="30"/>
+                                        <rect key="frame" x="62" y="134" width="148" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" title="Image picker with GIF"/>
                                         <connections>
                                             <action selector="showImagePickerWithGIF:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Hj3-TO-WHZ"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hR6-0W-ho8">
+                                        <rect key="frame" x="47" y="172" width="178" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Single Image Picker Mode"/>
+                                        <connections>
+                                            <action selector="showSingleImagePickerMode:" destination="BYZ-38-t0r" eventType="touchUpInside" id="fa7-9r-pUH"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="272" id="cbT-Dl-at5"/>
-                                    <constraint firstAttribute="height" constant="183.5" id="xl8-GB-ikT"/>
+                                    <constraint firstAttribute="width" constant="272" id="4ce-VO-Hn7"/>
+                                    <constraint firstAttribute="height" constant="222" id="EWP-YV-etQ"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="uhZ-hb-lFL" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="ZhJ-ni-0IN"/>
-                            <constraint firstItem="uhZ-hb-lFL" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="vX5-8a-n4y"/>
+                            <constraint firstItem="F9e-RO-5Gk" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="p8c-Kg-RFY"/>
+                            <constraint firstItem="F9e-RO-5Gk" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="s5z-r6-mqv"/>
                         </constraints>
                     </view>
                 </viewController>

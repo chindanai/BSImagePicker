@@ -78,4 +78,6 @@ public protocol BSImagePickerSettings {
     var takePhotoIcon: UIImage? { get set }
     
     var enableGif: Bool { get set }
+    
+    var multipleSelectionMode: Bool { get set }
 }
