@@ -44,6 +44,9 @@ final class AlbumTitleView: UIView {
                 // Adjust insets to right align image
                 albumButton?.titleEdgeInsets = UIEdgeInsets(top: 0, left: -imageView.bounds.size.width, bottom: 0, right: imageView.bounds.size.width)
                 albumButton?.imageEdgeInsets = UIEdgeInsets(top: 0, left: titleLabel.bounds.size.width + 4, bottom: 0, right: -(titleLabel.bounds.size.width + 4))
+                
+                albumButton.sizeToFit()
+                setNeedsLayout()
             }
         }
     }
@@ -69,4 +72,14 @@ final class AlbumTitleView: UIView {
         
         return UIImage(named: "arrow_down", in: bundle, compatibleWith: nil)
     }()
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        var tempFrame = self.frame
+        tempFrame.size.width = albumButton.frame.size.width + 4 + (arrowDownImage?.size.width ?? 0)
+        tempFrame.size.height = albumButton.frame.size.height
+
+        self.frame = tempFrame
+    }
 }
