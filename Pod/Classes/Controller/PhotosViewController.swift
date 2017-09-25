@@ -241,36 +241,69 @@ final class PhotosViewController : UICollectionViewController {
     // MARK: Private helper methods
     func updateDoneButton() {
         // Find right button
-        if let subViews = navigationController?.navigationBar.subviews, let photosDataSource = photosDataSource {
-            for view in subViews {
-                if let btn = view as? UIButton , checkIfRightButtonItem(btn) {
-                    // Store original title if we havn't got it
-                    if doneBarButtonTitle == nil {
-                        doneBarButtonTitle = btn.title(for: UIControlState())
-                    }
-                    
-                    // Update title
-                    if let doneBarButtonTitle = doneBarButtonTitle {
-                        // Special case if we have selected 1 image and that is
-                        // the max number of allowed selections
-                        if (photosDataSource.selections.count == 1 && self.settings.maxNumberOfSelections == 1) {
-                            btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle)", forState: UIControlState())
-                        } else if photosDataSource.selections.count > 0 {
-                            btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle) (\(photosDataSource.selections.count))", forState: UIControlState())
-                        } else {
-                            btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControlState())
+        if #available(iOS 11.0, *) {
+            guard let photosDataSource = photosDataSource else {
+                return
+            }
+            
+            if doneBarButtonTitle == nil {
+                doneBarButtonTitle = "Done"
+            }
+            
+            let btn = UIButton(type: .custom)
+            btn.addTarget(self, action: #selector(PhotosViewController.doneButtonPressed(_:)), for: .touchUpInside)
+            btn.setTitle(doneBarButtonTitle, for: .normal)
+            btn.setTitleColor(navigationController?.navigationBar.tintColor ?? UIColor.red, for: .normal)
+            btn.setTitleColor(UIColor.lightGray, for: .disabled)
+            
+            let tempDoneButtonItem = UIBarButtonItem(customView: btn)
+            self.navigationItem.rightBarButtonItem = tempDoneButtonItem
+            
+            doneBarButton = tempDoneButtonItem
+            
+            if (photosDataSource.selections.count == 1 && self.settings.maxNumberOfSelections == 1) {
+                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle ?? "Done")", forState: UIControlState())
+            } else if photosDataSource.selections.count > 0 {
+                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle ?? "Done") (\(photosDataSource.selections.count))", forState: UIControlState())
+            } else {
+                btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControlState())
+            }
+            
+            // Enabled?
+            btn.isEnabled = photosDataSource.selections.count > 0
+        } else {
+            if let subViews = navigationController?.navigationBar.subviews, let photosDataSource = photosDataSource {
+                for view in subViews {
+                    if let btn = view as? UIButton , checkIfRightButtonItem(btn) {
+                        // Store original title if we havn't got it
+                        if doneBarButtonTitle == nil {
+                            doneBarButtonTitle = btn.title(for: UIControlState())
                         }
                         
-                        // Enabled?
-                        doneBarButton?.isEnabled = photosDataSource.selections.count > 0
+                        // Update title
+                        if let doneBarButtonTitle = doneBarButtonTitle {
+                            // Special case if we have selected 1 image and that is
+                            // the max number of allowed selections
+                            if (photosDataSource.selections.count == 1 && self.settings.maxNumberOfSelections == 1) {
+                                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle)", forState: UIControlState())
+                            } else if photosDataSource.selections.count > 0 {
+                                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle) (\(photosDataSource.selections.count))", forState: UIControlState())
+                            } else {
+                                btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControlState())
+                            }
+                            
+                            // Enabled?
+                            doneBarButton?.isEnabled = photosDataSource.selections.count > 0
+                        }
+                        
+                        // Stop loop
+                        break
                     }
-                    
-                    // Stop loop
-                    break
                 }
             }
+            
         }
-
+        
         self.navigationController?.navigationBar.setNeedsLayout()
     }
     
