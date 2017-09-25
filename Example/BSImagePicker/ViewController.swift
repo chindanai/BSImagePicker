@@ -117,5 +117,25 @@ class ViewController: UIViewController {
             
         }
     }
+    
+    @IBAction func showImagePickerWithGIF(_ sender: UIButton) {
+        let vc = BSImagePickerViewController()
+        vc.settings.enableGif = true
+        //vc.defaultSelections = evenAssets
+        
+        bs_presentImagePickerController(vc, animated: true, select: { (assets) in
+            print("Selected: \(assets)")
+        }, deselect: { (assets) in
+            print("Selected: \(assets)")
+        }, cancel: { (assets) in
+            print("Selected: \(assets)")
+        }, finishWithGif: { (assets) in
+            print("Selected: \(assets)")
+        }, finish: { (assets) in
+            print("Selected: \(assets)")
+        }) {
+            
+        }
+    }
 }
 
