@@ -93,7 +93,7 @@ class ViewController: UIViewController {
         let evenAssets = PHAsset.fetchAssets(withLocalIdentifiers: evenAssetIds, options: nil)
       
         let vc = BSImagePickerViewController()
-        vc.defaultSelections = evenAssets
+        //vc.defaultSelections = evenAssets
       
         bs_presentImagePickerController(vc, animated: true,
           select: { (asset: PHAsset) -> Void in
