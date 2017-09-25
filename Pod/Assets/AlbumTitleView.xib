@@ -15,20 +15,15 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="30"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XBJ-wa-q8C">
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XBJ-wa-q8C">
                     <rect key="frame" x="8" y="0.0" width="584" height="30"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <state key="normal" title="Button">
                         <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </state>
                 </button>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-            <constraints>
-                <constraint firstAttribute="centerY" secondItem="XBJ-wa-q8C" secondAttribute="centerY" id="VNW-U1-5lq"/>
-                <constraint firstItem="XBJ-wa-q8C" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="Xu8-zz-8Vo"/>
-                <constraint firstAttribute="trailing" secondItem="XBJ-wa-q8C" secondAttribute="trailing" constant="8" id="je3-VY-t8h"/>
-                <constraint firstAttribute="centerX" secondItem="XBJ-wa-q8C" secondAttribute="centerX" id="yGE-8Z-sir"/>
-            </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="albumButton" destination="XBJ-wa-q8C" id="rc6-td-vgy"/>
