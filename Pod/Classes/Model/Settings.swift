@@ -31,6 +31,7 @@ final class Settings : BSImagePickerSettings {
     var selectionFillColor: UIColor = UIView().tintColor
     var selectionStrokeColor: UIColor = UIColor.white
     var selectionShadowColor: UIColor = UIColor.black
+    var statusBarStyle: UIStatusBarStyle = .lightContent
     var selectionTextAttributes: [String: AnyObject] = {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byTruncatingTail

@@ -54,9 +54,17 @@ open class BSImagePickerViewController : UINavigationController {
     open var filteredResults: PHFetchResult<PHAsset>?
     
     /**
+     PreferredStatusBarStyle
+     */
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        get {
+            return settings.statusBarStyle
+        }
+    }
+    
+    /**
      Fetch results.
      */
-    
     open lazy var fetchResults: [PHFetchResult] = { () -> [PHFetchResult<PHAssetCollection>] in
         let fetchOptions = PHFetchOptions()
         
@@ -142,7 +150,15 @@ open class BSImagePickerViewController : UINavigationController {
 
 // MARK: ImagePickerSettings proxy
 extension BSImagePickerViewController: BSImagePickerSettings {
-
+    public var statusBarStyle: UIStatusBarStyle {
+        get {
+            return settings.statusBarStyle
+        }
+        set {
+            settings.statusBarStyle = newValue
+        }
+    }
+    
 
     /**
      See BSImagePicketSettings for documentation

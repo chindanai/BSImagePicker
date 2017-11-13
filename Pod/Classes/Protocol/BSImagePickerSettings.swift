@@ -80,4 +80,6 @@ public protocol BSImagePickerSettings {
     var enableGif: Bool { get set }
     
     var multipleSelectionMode: Bool { get set }
+    
+    var statusBarStyle: UIStatusBarStyle { get set }
 }
