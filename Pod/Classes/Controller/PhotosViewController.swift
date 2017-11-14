@@ -683,7 +683,9 @@ extension PhotosViewController {
     
     fileprivate func finishWithAssets(_ assets: [PHAsset]) {
         guard let closure = finishClosure else {
-            dismiss(animated: true, completion: nil)
+            if (settings.dismissWhenFinished) {
+                dismiss(animated: true, completion: nil)
+            }
             return
         }
         
@@ -691,6 +693,8 @@ extension PhotosViewController {
             closure(assets)
         }
         
-        dismiss(animated: true, completion: nil)
+        if (settings.dismissWhenFinished) {
+            dismiss(animated: true, completion: nil)
+        }
     }
 }

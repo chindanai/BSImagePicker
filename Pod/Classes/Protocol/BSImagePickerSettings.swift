@@ -82,4 +82,6 @@ public protocol BSImagePickerSettings {
     var multipleSelectionMode: Bool { get set }
     
     var statusBarStyle: UIStatusBarStyle { get set }
+    
+    var dismissWhenFinished: Bool { get set }
 }

@@ -159,6 +159,14 @@ extension BSImagePickerViewController: BSImagePickerSettings {
         }
     }
     
+    public var dismissWhenFinished: Bool {
+        get {
+            return settings.dismissWhenFinished
+        }
+        set {
+            settings.dismissWhenFinished = newValue
+        }
+    }
 
     /**
      See BSImagePicketSettings for documentation
