@@ -26,11 +26,11 @@ import UIKit
 The navigation title view with album name and a button for activating the drop down.
 */
 open class AlbumTitleView: UIView {
-    @IBOutlet weak var albumButton: UIButton!
+    @IBOutlet open weak var albumButton: UIButton!
     
     fileprivate var context = 0
     
-    var albumTitle = "" {
+    open var albumTitle = "" {
         didSet {
             if let imageView = self.albumButton?.imageView, let titleLabel = self.albumButton?.titleLabel {
                 // Set title on button
