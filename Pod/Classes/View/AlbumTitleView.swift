@@ -25,7 +25,7 @@ import UIKit
 /**
 The navigation title view with album name and a button for activating the drop down.
 */
-final class AlbumTitleView: UIView {
+open class AlbumTitleView: UIView {
     @IBOutlet weak var albumButton: UIButton!
     
     fileprivate var context = 0
