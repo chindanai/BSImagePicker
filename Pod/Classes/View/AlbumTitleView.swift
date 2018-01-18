@@ -48,7 +48,7 @@ open class AlbumTitleView: UIView {
         }
     }
     
-    override func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
         
         // Set image
