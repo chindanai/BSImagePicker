@@ -96,10 +96,22 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             cell.photoSelected = false
         }
         
-//         cell.hiddenGif = true
-//         if settings?.enableGif ?? false && selections.count == 0 {
-//             cell.hiddenGif = !asset.isGif()
-//         }
+         cell.hiddenGif = true
+         if settings?.enableGif ?? false && selections.count == 0 {
+            var isGif = false
+            DispatchQueue.global().async() {
+                let resourceList = PHAssetResource.assetResources(for: asset)
+                for (_, resource) in resourceList.enumerated() {
+                    if (resource.uniformTypeIdentifier == "com.compuserve.gif") {
+                        isGif = true
+                        break
+                    }
+                }
+                DispatchQueue.main.async() {
+                    cell.hiddenGif = !isGif
+                }
+            }
+         }
         
         UIView.setAnimationsEnabled(true)
         
