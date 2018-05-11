@@ -96,10 +96,10 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             cell.photoSelected = false
         }
         
-        cell.hiddenGif = true
-        if settings?.enableGif ?? false && selections.count == 0 {
-            cell.hiddenGif = !asset.isGif()
-        }
+//         cell.hiddenGif = true
+//         if settings?.enableGif ?? false && selections.count == 0 {
+//             cell.hiddenGif = !asset.isGif()
+//         }
         
         UIView.setAnimationsEnabled(true)
         
