@@ -54,9 +54,17 @@ open class BSImagePickerViewController : UINavigationController {
     open var filteredResults: PHFetchResult<PHAsset>?
     
     /**
+     PreferredStatusBarStyle
+     */
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        get {
+            return settings.statusBarStyle
+        }
+    }
+    
+    /**
      Fetch results.
      */
-    
     open lazy var fetchResults: [PHFetchResult] = { () -> [PHFetchResult<PHAssetCollection>] in
         let fetchOptions = PHFetchOptions()
         
@@ -69,7 +77,7 @@ open class BSImagePickerViewController : UINavigationController {
         return [cameraRollResult, albumResult]
     }()
     
-    var albumTitleView: AlbumTitleView = bundle.loadNibNamed("AlbumTitleView", owner: nil, options: nil)!.first as! AlbumTitleView
+    open var albumTitleView: AlbumTitleView = bundle.loadNibNamed("AlbumTitleView", owner: nil, options: nil)!.first as! AlbumTitleView
     
     static let bundle: Bundle = Bundle(path: Bundle(for: PhotosViewController.self).path(forResource: "BSImagePicker", ofType: "bundle")!)!
     
@@ -142,7 +150,23 @@ open class BSImagePickerViewController : UINavigationController {
 
 // MARK: ImagePickerSettings proxy
 extension BSImagePickerViewController: BSImagePickerSettings {
-
+    public var statusBarStyle: UIStatusBarStyle {
+        get {
+            return settings.statusBarStyle
+        }
+        set {
+            settings.statusBarStyle = newValue
+        }
+    }
+    
+    public var dismissWhenFinished: Bool {
+        get {
+            return settings.dismissWhenFinished
+        }
+        set {
+            settings.dismissWhenFinished = newValue
+        }
+    }
 
     /**
      See BSImagePicketSettings for documentation
@@ -258,6 +282,24 @@ extension BSImagePickerViewController: BSImagePickerSettings {
         }
         set {
             settings.takePhotoIcon = newValue
+        }
+    }
+    
+    public var enableGif: Bool {
+        get {
+            return settings.enableGif
+        }
+        set {
+            settings.enableGif = newValue
+        }
+    }
+    
+    public var multipleSelectionMode: Bool {
+        get {
+            return settings.multipleSelectionMode
+        }
+        set {
+            settings.multipleSelectionMode = newValue
         }
     }
 }

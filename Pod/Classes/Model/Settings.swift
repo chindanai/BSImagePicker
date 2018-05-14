@@ -31,6 +31,8 @@ final class Settings : BSImagePickerSettings {
     var selectionFillColor: UIColor = UIView().tintColor
     var selectionStrokeColor: UIColor = UIColor.white
     var selectionShadowColor: UIColor = UIColor.black
+    var statusBarStyle: UIStatusBarStyle = .lightContent
+    var dismissWhenFinished: Bool = true
     var selectionTextAttributes: [String: AnyObject] = {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byTruncatingTail
@@ -58,4 +60,8 @@ final class Settings : BSImagePickerSettings {
     var takePhotos: Bool = false
     
     var takePhotoIcon: UIImage? = UIImage(named: "add_photo", in: BSImagePickerViewController.bundle, compatibleWith: nil)
+    
+    var enableGif: Bool = false
+    
+    var multipleSelectionMode: Bool = true
 }

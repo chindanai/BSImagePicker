@@ -49,6 +49,7 @@ final class PhotosViewController : UICollectionViewController {
     var deselectionClosure: ((_ asset: PHAsset) -> Void)?
     var cancelClosure: ((_ assets: [PHAsset]) -> Void)?
     var finishClosure: ((_ assets: [PHAsset]) -> Void)?
+    var finishWithGifClosure: ((_ assets: [PHAsset]) -> Void)?
     
     var doneBarButton: UIBarButtonItem?
     var cancelBarButton: UIBarButtonItem?
@@ -174,16 +175,12 @@ final class PhotosViewController : UICollectionViewController {
     }
     
     func doneButtonPressed(_ sender: UIBarButtonItem) {
-        guard let closure = finishClosure, let photosDataSource = photosDataSource else {
+        guard let photosDataSource = photosDataSource else {
             dismiss(animated: true, completion: nil)
             return
         }
         
-        DispatchQueue.global().async {
-            closure(photosDataSource.selections)
-        }
-        
-        dismiss(animated: true, completion: nil)
+        finishWithAssets(photosDataSource.selections)
     }
     
     func albumButtonPressed(_ sender: UIButton) {
@@ -219,7 +216,7 @@ final class PhotosViewController : UICollectionViewController {
                 
                 // Load image for preview
                 if let imageView = vc.imageView {
-                    PHCachingImageManager.default().requestImage(for: asset, targetSize:imageView.frame.size, contentMode: .aspectFit, options: options) { (result, _) in
+                    PHCachingImageManager.default().requestImage(for: asset, targetSize:PHImageManagerMaximumSize, contentMode: .aspectFit, options: options) { (result, _) in
                         imageView.image = result
                     }
                 }
@@ -244,36 +241,69 @@ final class PhotosViewController : UICollectionViewController {
     // MARK: Private helper methods
     func updateDoneButton() {
         // Find right button
-        if let subViews = navigationController?.navigationBar.subviews, let photosDataSource = photosDataSource {
-            for view in subViews {
-                if let btn = view as? UIButton , checkIfRightButtonItem(btn) {
-                    // Store original title if we havn't got it
-                    if doneBarButtonTitle == nil {
-                        doneBarButtonTitle = btn.title(for: UIControlState())
-                    }
-                    
-                    // Update title
-                    if let doneBarButtonTitle = doneBarButtonTitle {
-                        // Special case if we have selected 1 image and that is
-                        // the max number of allowed selections
-                        if (photosDataSource.selections.count == 1 && self.settings.maxNumberOfSelections == 1) {
-                            btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle)", forState: UIControlState())
-                        } else if photosDataSource.selections.count > 0 {
-                            btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle) (\(photosDataSource.selections.count))", forState: UIControlState())
-                        } else {
-                            btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControlState())
+        if #available(iOS 11.0, *) {
+            guard let photosDataSource = photosDataSource else {
+                return
+            }
+            
+            if doneBarButtonTitle == nil {
+                doneBarButtonTitle = "Done"
+            }
+            
+            let btn = UIButton(type: .custom)
+            btn.addTarget(self, action: #selector(PhotosViewController.doneButtonPressed(_:)), for: .touchUpInside)
+            btn.setTitle(doneBarButtonTitle, for: .normal)
+            btn.setTitleColor(navigationController?.navigationBar.tintColor ?? UIColor.red, for: .normal)
+            btn.setTitleColor(UIColor.lightGray, for: .disabled)
+            
+            let tempDoneButtonItem = UIBarButtonItem(customView: btn)
+            self.navigationItem.rightBarButtonItem = tempDoneButtonItem
+            
+            doneBarButton = tempDoneButtonItem
+            
+            if (photosDataSource.selections.count == 1 && self.settings.maxNumberOfSelections == 1) {
+                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle ?? "Done")", forState: UIControlState())
+            } else if photosDataSource.selections.count > 0 {
+                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle ?? "Done") (\(photosDataSource.selections.count))", forState: UIControlState())
+            } else {
+                btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControlState())
+            }
+            
+            // Enabled?
+            btn.isEnabled = photosDataSource.selections.count > 0
+        } else {
+            if let subViews = navigationController?.navigationBar.subviews, let photosDataSource = photosDataSource {
+                for view in subViews {
+                    if let btn = view as? UIButton , checkIfRightButtonItem(btn) {
+                        // Store original title if we havn't got it
+                        if doneBarButtonTitle == nil {
+                            doneBarButtonTitle = btn.title(for: UIControlState())
                         }
                         
-                        // Enabled?
-                        doneBarButton?.isEnabled = photosDataSource.selections.count > 0
+                        // Update title
+                        if let doneBarButtonTitle = doneBarButtonTitle {
+                            // Special case if we have selected 1 image and that is
+                            // the max number of allowed selections
+                            if (photosDataSource.selections.count == 1 && self.settings.maxNumberOfSelections == 1) {
+                                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle)", forState: UIControlState())
+                            } else if photosDataSource.selections.count > 0 {
+                                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle) (\(photosDataSource.selections.count))", forState: UIControlState())
+                            } else {
+                                btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControlState())
+                            }
+                            
+                            // Enabled?
+                            doneBarButton?.isEnabled = photosDataSource.selections.count > 0
+                        }
+                        
+                        // Stop loop
+                        break
                     }
-                    
-                    // Stop loop
-                    break
                 }
             }
+            
         }
-
+        
         self.navigationController?.navigationBar.setNeedsLayout()
     }
     
@@ -386,6 +416,10 @@ extension PhotosViewController {
 
             cell.photoSelected = false
 
+            if settings.enableGif && photosDataSource.selections.count == 0 {
+                enableGif()
+            }
+            
             // Call deselection closure
             if let closure = deselectionClosure {
                 DispatchQueue.global().async {
@@ -395,23 +429,34 @@ extension PhotosViewController {
         } else if photosDataSource.selections.count < settings.maxNumberOfSelections { // Select
             // Select asset if not already selected
             photosDataSource.selections.append(asset)
-
-            // Set selection number
-            if let selectionCharacter = settings.selectionCharacter {
-                cell.selectionString = String(selectionCharacter)
+            
+            if settings.multipleSelectionMode {
+                // Set selection number
+                if let selectionCharacter = settings.selectionCharacter {
+                    cell.selectionString = String(selectionCharacter)
+                } else {
+                    cell.selectionString = String(photosDataSource.selections.count)
+                }
+                
+                cell.photoSelected = true
+                
+                // Update done button
+                updateDoneButton()
+                
+                if settings.enableGif {
+                    if photosDataSource.selections.count == 1 && asset.isGif() {
+                        showDisplayGifOrImageOptions(asset)
+                    } else {
+                        selectAssetAsImage(asset)
+                    }
+                } else {
+                    selectAssetAsImage(asset)
+                }
             } else {
-                cell.selectionString = String(photosDataSource.selections.count)
-            }
-
-            cell.photoSelected = true
-
-            // Update done button
-            updateDoneButton()
-
-            // Call selection closure
-            if let closure = selectionClosure {
-                DispatchQueue.global().async {
-                    closure(asset)
+                if settings.enableGif && asset.isGif() {
+                    finishWithSelectGif(asset)
+                } else {
+                    finishWithAssets([asset])
                 }
             }
         }
@@ -476,7 +521,11 @@ extension PhotosViewController {
             collectionViewFlowLayout.itemSpacing = itemSpacing
             collectionViewFlowLayout.itemsPerRow = cellsPerRow
             
-            photosDataSource?.imageSize = collectionViewFlowLayout.itemSize
+            let imageSize = collectionViewFlowLayout.itemSize
+            let retinaScale = (PHImageManagerMaximumSize.equalTo(imageSize)) ? 1 :  UIScreen.main.scale
+            let retinaSize = CGSize(width: imageSize.width * retinaScale, height: imageSize.height * retinaScale)
+          
+            photosDataSource?.imageSize = retinaSize
             
             updateDoneButton()
         }
@@ -538,13 +587,13 @@ extension PhotosViewController: PHPhotoLibraryChangeObserver {
                     // Update fetch result
                     photosDataSource.fetchResult = photosChanges.fetchResultAfterChanges as! PHFetchResult<PHAsset>
                     
-                    if let removed = photosChanges.removedIndexes {
-                        collectionView.deleteItems(at: removed.bs_indexPathsForSection(1))
-                    }
+                    //if let removed = photosChanges.removedIndexes {
+                    //    collectionView.deleteItems(at: removed.sdnp_indexPathsForSection(1, fetchResult: photosDataSource.fetchResult))
+                    //}
                     
-                    if let inserted = photosChanges.insertedIndexes {
-                        collectionView.insertItems(at: inserted.bs_indexPathsForSection(1))
-                    }
+                    //if let inserted = photosChanges.insertedIndexes {
+                    //    collectionView.insertItems(at: inserted.sdnp_indexPathsForSection(1, fetchResult: photosDataSource.fetchResult))
+                    //}
                     
                     // Changes is causing issues right now...fix me later
                     // Example of issue:
@@ -572,5 +621,84 @@ extension PhotosViewController: PHPhotoLibraryChangeObserver {
         
         
         // TODO: Changes in albums
+    }
+}
+
+// Mod's Code
+extension PhotosViewController {
+    fileprivate func showDisplayGifOrImageOptions(_ asset: PHAsset) {
+        let alertController = UIAlertController(title: "", message: "Do you want to display this image as GIF?", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { [weak self] (action) in
+            self?.finishWithSelectGif(asset)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
+            self?.selectAssetAsImage(asset)
+        }
+        
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    fileprivate func disableGif() {
+        if let collectionView = collectionView {
+            
+            for cell in collectionView.visibleCells {
+                let photoCell = cell as? PhotoCell
+                photoCell?.hiddenGif = true
+            }
+        }
+    }
+    
+    fileprivate func enableGif() {
+        if let collectionView = collectionView {
+            for cell in collectionView.visibleCells {
+                let photoCell = cell as? PhotoCell
+                photoCell?.hiddenGif = !(photoCell?.asset?.isGif() ?? false)
+            }
+        }
+    }
+    
+    fileprivate func selectAssetAsImage(_ asset: PHAsset) {
+        if let closure = selectionClosure {
+            DispatchQueue.global().async {
+                closure(asset)
+            }
+        }
+        
+        if settings.enableGif {
+            disableGif()
+        }
+    }
+    
+    fileprivate func finishWithSelectGif(_ asset: PHAsset) {
+        guard let closure = finishWithGifClosure else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        
+        DispatchQueue.global().async {
+            closure([asset])
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    fileprivate func finishWithAssets(_ assets: [PHAsset]) {
+        guard let closure = finishClosure else {
+            if (settings.dismissWhenFinished) {
+                dismiss(animated: true, completion: nil)
+            }
+            return
+        }
+        
+        DispatchQueue.global().async {
+            closure(assets)
+        }
+        
+        if (settings.dismissWhenFinished) {
+            dismiss(animated: true, completion: nil)
+        }
     }
 }

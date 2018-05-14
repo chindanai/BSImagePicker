@@ -28,29 +28,46 @@ Gives UICollectionViewDataSource functionality with a given data source and cell
 */
 final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource {
     var selections = [PHAsset]()
-    var fetchResult: PHFetchResult<PHAsset>
+    var fetchResult: PHFetchResult<PHAsset>! {
+        willSet {
+            photosManager.stopCachingImagesForAllAssets()
+        }
+        didSet {
+            var assets = [PHAsset]()
+            fetchResult.enumerateObjects({ (asset, _, _) in
+                assets.append(asset)
+            })
+            self.assets = assets
+            self.assets.reverse()
+            photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
+        }
+    }
+    
+    fileprivate var assets: [PHAsset]!
     
     fileprivate let photoCellIdentifier = "photoCellIdentifier"
-    fileprivate let photosManager = PHCachingImageManager.default()
+    fileprivate let photosManager = PHCachingImageManager()
     fileprivate let imageContentMode: PHImageContentMode = .aspectFill
     
-    let settings: BSImagePickerSettings?
+    var settings: BSImagePickerSettings?
     var imageSize: CGSize = CGSize.zero
     
     init(fetchResult: PHFetchResult<PHAsset>, selections: [PHAsset]? = nil, settings: BSImagePickerSettings?) {
-        self.fetchResult = fetchResult
+        super.init()
+        
+        self.initFetchResult(fetchResult)
         self.settings = settings
         if let selections = selections {
             self.selections = selections
         }
+    }
     
-        super.init()
+    fileprivate func initFetchResult(_ fetchResult: PHFetchResult<PHAsset>) {
+        self.fetchResult = fetchResult
     }
     
     func assetAtIndexPath(_ indexPath: IndexPath) -> PHAsset {
-        let reversedIndex = fetchResult.count - indexPath.item - 1
-        let asset = fetchResult[reversedIndex]
-        
+        let asset = assets[indexPath.item]
         return asset
     }
     
@@ -59,7 +76,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fetchResult.count
+        return assets.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -79,7 +96,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         cell.asset = asset
         
         // Request image
-        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil) { (result, _) in
             cell.imageView.image = result
         })
         
@@ -95,6 +112,23 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         } else {
             cell.photoSelected = false
         }
+        
+         cell.hiddenGif = true
+         if settings?.enableGif ?? false && selections.count == 0 {
+            var isGif = false
+            DispatchQueue.global().async() {
+                let resourceList = PHAssetResource.assetResources(for: asset)
+                for (_, resource) in resourceList.enumerated() {
+                    if (resource.uniformTypeIdentifier == "com.compuserve.gif") {
+                        isGif = true
+                        break
+                    }
+                }
+                DispatchQueue.main.async() {
+                    cell.hiddenGif = !isGif
+                }
+            }
+         }
         
         UIView.setAnimationsEnabled(true)
         
