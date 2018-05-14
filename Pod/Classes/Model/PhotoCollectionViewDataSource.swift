@@ -37,8 +37,8 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             fetchResult.enumerateObjects({ (asset, _, _) in
                 assets.append(asset)
             })
-            
-            self.assets = assets.reverse()
+            self.assets = assets
+            self.assets.reverse()
             photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil)
         }
     }
