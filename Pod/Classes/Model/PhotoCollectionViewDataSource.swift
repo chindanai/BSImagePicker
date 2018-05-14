@@ -81,7 +81,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         let initialRequestOptions = PHImageRequestOptions()
         initialRequestOptions.isSynchronous = false
         initialRequestOptions.resizeMode = .exact
-        initialRequestOptions.deliveryMode = .fastFormat
+        initialRequestOptions.deliveryMode = .highQualityFormat
         
         print("width = \(imageSize.width)")
         print("height = \(imageSize.height)")
