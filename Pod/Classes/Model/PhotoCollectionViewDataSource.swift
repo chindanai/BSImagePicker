@@ -78,6 +78,11 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
         
+        let initialRequestOptions = PHImageRequestOptions()
+        initialRequestOptions.isSynchronous = true
+        initialRequestOptions.resizeMode = .fast
+        initialRequestOptions.deliveryMode = .fastFormat
+        
         // Request image
         cell.tag = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             cell.imageView.image = result
