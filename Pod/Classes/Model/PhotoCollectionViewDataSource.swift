@@ -43,7 +43,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
 //            initialRequestOptions.isSynchronous = false
 //            initialRequestOptions.resizeMode = .exact
 //            initialRequestOptions.deliveryMode = .highQualityFormat
-            photosManager.startCachingImages(for: assets, targetSize: PHImageManagerMaximumSize, contentMode: imageContentMode, options: nil)
+            photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
         }
     }
     
@@ -107,7 +107,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
 //        initialRequestOptions.deliveryMode = .highQualityFormat
 
         // Request image
-        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil) { (result, _) in
             cell.imageView.image = result
         })
         
