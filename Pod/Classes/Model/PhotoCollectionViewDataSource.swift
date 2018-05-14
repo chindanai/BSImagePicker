@@ -38,6 +38,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
                 assets.append(asset)
             })
             
+            self.assets = assets
             let initialRequestOptions = PHImageRequestOptions()
             initialRequestOptions.isSynchronous = false
             initialRequestOptions.resizeMode = .exact
@@ -45,6 +46,8 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             photosManager.startCachingImages(for: assets, targetSize: PHImageManagerMaximumSize, contentMode: imageContentMode, options: initialRequestOptions)
         }
     }
+    
+    fileprivate var assets: [PHAsset]!
     
     fileprivate let photoCellIdentifier = "photoCellIdentifier"
     fileprivate let photosManager = PHCachingImageManager()
@@ -68,8 +71,8 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func assetAtIndexPath(_ indexPath: IndexPath) -> PHAsset {
-        let reversedIndex = fetchResult.count - indexPath.item - 1
-        let asset = fetchResult[reversedIndex]
+        let reversedIndex = assets.count - indexPath.item - 1
+        let asset = assets[reversedIndex]
         
         return asset
     }
@@ -79,7 +82,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fetchResult.count
+        return assets.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
