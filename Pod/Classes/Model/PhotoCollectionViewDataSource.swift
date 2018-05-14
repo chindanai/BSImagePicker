@@ -39,7 +39,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             })
             self.assets = assets
             self.assets.reverse()
-            photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil)
+            photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
         }
     }
     
@@ -96,7 +96,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         cell.asset = asset
         
         // Request image
-        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil) { (result, _) in
             cell.imageView.image = result
         })
         
