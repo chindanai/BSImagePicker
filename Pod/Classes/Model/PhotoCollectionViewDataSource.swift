@@ -39,11 +39,11 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             })
             
             self.assets = assets
-            let initialRequestOptions = PHImageRequestOptions()
-            initialRequestOptions.isSynchronous = false
-            initialRequestOptions.resizeMode = .exact
-            initialRequestOptions.deliveryMode = .highQualityFormat
-            photosManager.startCachingImages(for: assets, targetSize: PHImageManagerMaximumSize, contentMode: imageContentMode, options: initialRequestOptions)
+//            let initialRequestOptions = PHImageRequestOptions()
+//            initialRequestOptions.isSynchronous = false
+//            initialRequestOptions.resizeMode = .exact
+//            initialRequestOptions.deliveryMode = .highQualityFormat
+            photosManager.startCachingImages(for: assets, targetSize: PHImageManagerMaximumSize, contentMode: imageContentMode, options: nil)
         }
     }
     
@@ -101,13 +101,13 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
         
-        let initialRequestOptions = PHImageRequestOptions()
-        initialRequestOptions.isSynchronous = false
-        initialRequestOptions.resizeMode = .exact
-        initialRequestOptions.deliveryMode = .highQualityFormat
+//        let initialRequestOptions = PHImageRequestOptions()
+//        initialRequestOptions.isSynchronous = false
+//        initialRequestOptions.resizeMode = .exact
+//        initialRequestOptions.deliveryMode = .highQualityFormat
 
         // Request image
-        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: imageContentMode, options: initialRequestOptions) { (result, _) in
+        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: imageContentMode, options: nil) { (result, _) in
             cell.imageView.image = result
         })
         
