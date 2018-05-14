@@ -30,7 +30,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     var selections = [PHAsset]()
     var fetchResult: PHFetchResult<PHAsset>! {
         willSet {
-            photosManager.stopCachingImagesForAllAssets()
+            //photosManager.stopCachingImagesForAllAssets()
         }
         didSet {
             var assets = [PHAsset]()
@@ -39,14 +39,14 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             })
             self.assets = assets
             self.assets.reverse()
-            photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
+            //photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
         }
     }
     
     fileprivate var assets: [PHAsset]!
     
     fileprivate let photoCellIdentifier = "photoCellIdentifier"
-    fileprivate let photosManager = PHCachingImageManager()
+    fileprivate let photosManager = PHImageManager.default()
     fileprivate let imageContentMode: PHImageContentMode = .aspectFill
     
     var settings: BSImagePickerSettings?
@@ -96,7 +96,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         cell.asset = asset
         
         // Request image
-        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             cell.imageView.image = result
         })
         
