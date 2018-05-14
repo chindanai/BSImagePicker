@@ -28,23 +28,43 @@ Gives UICollectionViewDataSource functionality with a given data source and cell
 */
 final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource {
     var selections = [PHAsset]()
-    var fetchResult: PHFetchResult<PHAsset>
+    var fetchResult: PHFetchResult<PHAsset>! {
+        willSet {
+            photosManager.stopCachingImagesForAllAssets()
+        }
+        didSet {
+            var assets = [PHAsset]()
+            fetchResult.enumerateObjects({ (asset, _, _) in
+                assets.append(asset)
+            })
+            
+            let initialRequestOptions = PHImageRequestOptions()
+            initialRequestOptions.isSynchronous = false
+            initialRequestOptions.resizeMode = .exact
+            initialRequestOptions.deliveryMode = .highQualityFormat
+            photosManager.startCachingImages(for: assets, targetSize: PHImageManagerMaximumSize, contentMode: imageContentMode, options: initialRequestOptions)
+        }
+    }
     
     fileprivate let photoCellIdentifier = "photoCellIdentifier"
-    fileprivate let photosManager = PHCachingImageManager.default()
+    fileprivate let photosManager = PHCachingImageManager()
     fileprivate let imageContentMode: PHImageContentMode = .aspectFill
     
-    let settings: BSImagePickerSettings?
+    var settings: BSImagePickerSettings?
     var imageSize: CGSize = CGSize.zero
     
     init(fetchResult: PHFetchResult<PHAsset>, selections: [PHAsset]? = nil, settings: BSImagePickerSettings?) {
-        self.fetchResult = fetchResult
+        super.init()
+        
+        self.initFetchResult(fetchResult)
         self.settings = settings
         if let selections = selections {
             self.selections = selections
         }
+    }
     
-        super.init()
+    fileprivate func initFetchResult(_ fetchResult: PHFetchResult<PHAsset>) {
+        self.fetchResult = fetchResult
     }
     
     func assetAtIndexPath(_ indexPath: IndexPath) -> PHAsset {
@@ -82,10 +102,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         initialRequestOptions.isSynchronous = false
         initialRequestOptions.resizeMode = .exact
         initialRequestOptions.deliveryMode = .highQualityFormat
-        
-        print("width = \(imageSize.width)")
-        print("height = \(imageSize.height)")
-        
+
         // Request image
         cell.tag = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: initialRequestOptions) { (result, _) in
             cell.imageView.image = result
