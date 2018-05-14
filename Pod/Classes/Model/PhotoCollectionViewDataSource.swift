@@ -38,12 +38,8 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
                 assets.append(asset)
             })
             
-            self.assets = assets
-//            let initialRequestOptions = PHImageRequestOptions()
-//            initialRequestOptions.isSynchronous = false
-//            initialRequestOptions.resizeMode = .exact
-//            initialRequestOptions.deliveryMode = .highQualityFormat
-            photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
+            self.assets = assets.reverse()
+            photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil)
         }
     }
     
@@ -71,9 +67,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func assetAtIndexPath(_ indexPath: IndexPath) -> PHAsset {
-        let reversedIndex = assets.count - indexPath.item - 1
-        let asset = assets[reversedIndex]
-        
+        let asset = assets[indexPath.item]
         return asset
     }
     
@@ -101,13 +95,8 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
         
-//        let initialRequestOptions = PHImageRequestOptions()
-//        initialRequestOptions.isSynchronous = false
-//        initialRequestOptions.resizeMode = .exact
-//        initialRequestOptions.deliveryMode = .highQualityFormat
-
         // Request image
-        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil) { (result, _) in
             cell.imageView.image = result
         })
         
