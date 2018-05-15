@@ -182,7 +182,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         var assets = [PHAsset]()
         for indexPath in indexPaths {
             let asset = assetAtIndexPath(indexPath)
-            assets.append(indexPath)
+            assets.append(asset)
         }
         
         return assets
