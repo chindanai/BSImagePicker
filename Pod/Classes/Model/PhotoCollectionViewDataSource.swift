@@ -72,8 +72,8 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func assetAtIndexPath(_ indexPath: IndexPath) -> PHAsset {
-        //let reversedIndex = fetchResult.count - indexPath.item - 1
-        let asset = fetchResult[indexPath.item]
+        let reversedIndex = fetchResult.count - indexPath.item - 1
+        let asset = fetchResult[reversedIndex]
         return asset
     }
     
@@ -104,9 +104,11 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         
         // Request image
         cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
-            if cell.asset?.localIdentifier == asset.localIdentifier {
-                if let result = result {
-                    cell.imageView.image = result
+            DispatchQueue.main.async {
+                if cell.asset?.localIdentifier == asset.localIdentifier {
+                    if let result = result {
+                        cell.imageView.image = result
+                    }
                 }
             }
         })

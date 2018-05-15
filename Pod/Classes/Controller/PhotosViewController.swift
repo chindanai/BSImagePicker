@@ -380,13 +380,21 @@ final class PhotosViewController : UICollectionViewController {
 // MARK: UICollectionViewDelegate
 extension PhotosViewController {
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard self.isViewLoaded && self.view.window != nil else {
+        guard self.isViewLoaded && self.view.window != nil && scrollView.isDecelerating else {
             return
         }
         
         if let collectionView = collectionView {
             photosDataSource?.updateCachedAssets(collectionView)
         }
+    }
+    
+    override func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        photosDataSource?.stopCachedAssetes()
+    }
+
+    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        
     }
     
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
