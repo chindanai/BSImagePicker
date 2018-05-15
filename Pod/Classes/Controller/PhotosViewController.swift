@@ -161,6 +161,14 @@ final class PhotosViewController : UICollectionViewController {
         updateDoneButton()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if let collectionView = collectionView {
+            photosDataSource?.updateCachedAssets(collectionView)
+        }
+    }
+    
     // MARK: Button actions
     func cancelButtonPressed(_ sender: UIBarButtonItem) {
         guard let closure = cancelClosure, let photosDataSource = photosDataSource else {
@@ -371,6 +379,16 @@ final class PhotosViewController : UICollectionViewController {
 
 // MARK: UICollectionViewDelegate
 extension PhotosViewController {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard self.isViewLoaded && self.view.window != nil else {
+            return
+        }
+        
+        if let collectionView = collectionView {
+            photosDataSource?.updateCachedAssets(collectionView)
+        }
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         // NOTE: ALWAYS return false. We don't want the collectionView to be the source of thruth regarding selections
         // We can manage it ourself.
@@ -521,13 +539,10 @@ extension PhotosViewController {
             collectionViewFlowLayout.itemSpacing = itemSpacing
             collectionViewFlowLayout.itemsPerRow = cellsPerRow
             
-//            let imageSize = collectionViewFlowLayout.itemSize
-//            let retinaScale = (PHImageManagerMaximumSize.equalTo(imageSize)) ? 1 :  UIScreen.main.scale
-//            let retinaSize = CGSize(width: imageSize.width * retinaScale, height: imageSize.height * retinaScale)
-//          
-//            photosDataSource?.imageSize = retinaSize
-            
-            photosDataSource?.imageSize = collectionViewFlowLayout.itemSize
+            let imageSize = collectionViewFlowLayout.itemSize
+            let retinaScale = (PHImageManagerMaximumSize.equalTo(imageSize)) ? 1 :  UIScreen.main.scale
+            let retinaSize = CGSize(width: imageSize.width * retinaScale, height: imageSize.height * retinaScale)
+            photosDataSource?.imageSize = retinaSize
             
             updateDoneButton()
         }
@@ -611,12 +626,14 @@ extension PhotosViewController: PHPhotoLibraryChangeObserver {
                     
                     // Reload view
                     collectionView.reloadData()
+                    photosDataSource.stopCachedAssetes()
                 } else if photosChanges.hasIncrementalChanges == false {
                     // Update fetch result
                     photosDataSource.fetchResult = photosChanges.fetchResultAfterChanges as! PHFetchResult<PHAsset>
                     
                     // Reload view
                     collectionView.reloadData()
+                    photosDataSource.stopCachedAssetes()
                 }
             }
         })
