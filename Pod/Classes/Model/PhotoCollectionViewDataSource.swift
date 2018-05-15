@@ -28,32 +28,28 @@ import MobileCoreServices
 Gives UICollectionViewDataSource functionality with a given data source and cell factory
 */
 
-struct PhotoAssetGifItem {
-    var asset: PHAsset!
-    var ifGif = false
-}
-
 final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource {
     var selections = [PHAsset]()
     var fetchResult: PHFetchResult<PHAsset>! {
         willSet {
-            photosManager.stopCachingImagesForAllAssets()
+            //photosManager.stopCachingImagesForAllAssets()
         }
         didSet {
-            var assets = [PHAsset]()
-            fetchResult.enumerateObjects({ (asset, _, _) in
-                assets.append(asset)
-            })
-            self.assets = assets
-            self.assets.reverse()
-            photosManager.startCachingImages(for: self.assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
+//            var assets = [PHAsset]()
+//            fetchResult.enumerateObjects({ (asset, _, _) in
+//                assets.append(asset)
+//            })
+//            self.assets = assets
+//            self.assets.reverse()
+//
+//            photosManager.startCachingImages(for: self.assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
         }
     }
     
     fileprivate var assets: [PHAsset]!
     
     fileprivate let photoCellIdentifier = "photoCellIdentifier"
-    fileprivate let photosManager = PHCachingImageManager()
+    fileprivate let photosManager = PHImageManager.default()
     fileprivate let imageContentMode: PHImageContentMode = .aspectFill
     
     var settings: BSImagePickerSettings?
@@ -74,7 +70,8 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func assetAtIndexPath(_ indexPath: IndexPath) -> PHAsset {
-        let asset = assets[indexPath.item]
+        let reversedIndex = assets.count - indexPath.item - 1
+        let asset = fetchResult[reversedIndex]
         return asset
     }
     
@@ -83,7 +80,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return assets.count
+        return fetchResult.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -109,7 +106,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         }
         
         // Request image
-        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             cell.imageView.image = result
         })
         
@@ -131,25 +128,29 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
          cell.hiddenGif = true
         
         // 3
-        
-        if let identifier = asset.value(forKey: "uniformTypeIdentifier") as? String {
-            if identifier == kUTTypeGIF as String {
-                cell.hiddenGif = false
+        if settings?.enableGif ?? false && selections.count == 0 {
+            if let identifier = asset.value(forKey: "uniformTypeIdentifier") as? String {
+                if identifier == kUTTypeGIF as String {
+                    cell.hiddenGif = false
+                }
             }
         }
-        
+    
         
         // Request editing input
         // 2
-//        let options = PHContentEditingInputRequestOptions()
-//        options.isNetworkAccessAllowed = true
-//        cell.editingInputId = asset.requestContentEditingInput(with: options) { (contentEditingInput, _) in
-//            if let uniformTypeIdentifier = contentEditingInput?.uniformTypeIdentifier {
-//                if uniformTypeIdentifier == (kUTTypeGIF as String) {
-//                    cell.hiddenGif = false
+//        if settings?.enableGif ?? false && selections.count == 0 {
+//            let options = PHContentEditingInputRequestOptions()
+//            options.isNetworkAccessAllowed = true
+//            cell.editingInputId = asset.requestContentEditingInput(with: options) { (contentEditingInput, _) in
+//                if let uniformTypeIdentifier = contentEditingInput?.uniformTypeIdentifier {
+//                    if uniformTypeIdentifier == (kUTTypeGIF as String) {
+//                        cell.hiddenGif = false
+//                    }
 //                }
 //            }
 //        }
+        
         // 1
 //         if settings?.enableGif ?? false && selections.count == 0 {
 //            var isGif = false
