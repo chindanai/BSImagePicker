@@ -47,24 +47,8 @@ extension UICollectionView {
 
 final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource {
     var selections = [PHAsset]()
-    var fetchResult: PHFetchResult<PHAsset>! {
-        willSet {
-            //photosManager.stopCachingImagesForAllAssets()
-        }
-        didSet {
-//            var assets = [PHAsset]()
-//            fetchResult.enumerateObjects({ (asset, _, _) in
-//                assets.append(asset)
-//            })
-//            self.assets = assets
-//            self.assets.reverse()
-//
-//            photosManager.startCachingImages(for: self.assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
-        }
-    }
-    
-    fileprivate var assets: [PHAsset]!
-    
+    var fetchResult: PHFetchResult<PHAsset>!
+
     fileprivate let photoCellIdentifier = "photoCellIdentifier"
     fileprivate let photosManager = PHCachingImageManager()
     fileprivate let imageContentMode: PHImageContentMode = .aspectFill
