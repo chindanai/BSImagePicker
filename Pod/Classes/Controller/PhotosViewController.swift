@@ -391,17 +391,6 @@ extension PhotosViewController {
         }
     }
     
-    override func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        //isDecelerating = true
-        //photosDataSource?.stopCachedAssetes()
-    }
-
-    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        //isDecelerating = false
-        //if let castedCollectionView = scrollView as? UICollectionView {
-        //    photosDataSource?.updateCachedAssets(castedCollectionView)
-        //}
-    }
     
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         // NOTE: ALWAYS return false. We don't want the collectionView to be the source of thruth regarding selections
@@ -554,7 +543,7 @@ extension PhotosViewController {
             collectionViewFlowLayout.itemsPerRow = cellsPerRow
             
             let imageSize = collectionViewFlowLayout.itemSize
-            let retinaScale = (PHImageManagerMaximumSize.equalTo(imageSize)) ? 1 :  UIScreen.main.scale
+            let retinaScale = UIScreen.main.scale
             let retinaSize = CGSize(width: imageSize.width * retinaScale, height: imageSize.height * retinaScale)
             photosDataSource?.imageSize = retinaSize
             

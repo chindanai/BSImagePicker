@@ -29,21 +29,6 @@ Gives UICollectionViewDataSource functionality with a given data source and cell
 */
 
 extension UICollectionView {
-    func indexPathForElementInRects(_ rect: CGRect) -> [IndexPath]? {
-        let allLayoutAttributes = self.collectionViewLayout.layoutAttributesForElements(in: rect)
-        
-        var indexPaths: [IndexPath]?
-        if let allLayoutAttributes = allLayoutAttributes, allLayoutAttributes.count > 0 {
-            indexPaths = [IndexPath]()
-            for layoutAttributes in allLayoutAttributes {
-                let indexPath = layoutAttributes.indexPath
-                indexPaths?.append(indexPath)
-            }
-        }
-        
-        return indexPaths
-    }
-    
     func indexPathsForElements(in rect: CGRect) -> [IndexPath] {
         let allLayoutAttributes = collectionViewLayout.layoutAttributesForElements(in: rect)!
         return allLayoutAttributes.map { $0.indexPath }
@@ -99,18 +84,12 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             cell.settings = settings
         }
         
-        // Cancel any pending image requests
-//        if cell.requestImageId != -1 {
-//            photosManager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
-//        }
-
-        
         let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
         cell.assetId = asset.localIdentifier
         
         // Request image
-        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil) { (result, _) in
+        photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             DispatchQueue.main.async {
                 if cell.assetId == asset.localIdentifier {
                     if let result = result {
@@ -118,9 +97,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
                     }
                 }
             }
-        })
-        
-        // Request Editing input
+        }
         
         // Set selection number
         if let index = selections.index(of: asset) {
@@ -219,9 +196,9 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         
         // Update the assets the PHCachingImageManager is caching.
         photosManager.startCachingImages(for: addedAssets,
-                                        targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil)
+                                        targetSize: imageSize, contentMode: imageContentMode, options: nil)
         photosManager.stopCachingImages(for: removedAssets,
-                                       targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil)
+                                       targetSize: imageSize, contentMode: imageContentMode, options: nil)
         
         // Store the preheat rect to compare against in the future.
         previousPreheatRect = preheatRect
