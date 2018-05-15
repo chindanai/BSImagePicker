@@ -542,10 +542,10 @@ extension PhotosViewController {
             collectionViewFlowLayout.itemSpacing = itemSpacing
             collectionViewFlowLayout.itemsPerRow = cellsPerRow
             
-            let imageSize = collectionViewFlowLayout.itemSize
-            let retinaScale = UIScreen.main.scale
-            let retinaSize = CGSize(width: imageSize.width * retinaScale, height: imageSize.height * retinaScale)
-            photosDataSource?.imageSize = retinaSize
+//            let imageSize = collectionViewFlowLayout.itemSize
+//            let retinaScale = UIScreen.main.scale
+//            let retinaSize = CGSize(width: imageSize.width * retinaScale, height: imageSize.height * retinaScale)
+            photosDataSource?.imageSize = CGSize(width: 371, height: 371)
             
             updateDoneButton()
         }
