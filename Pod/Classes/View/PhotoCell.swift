@@ -110,4 +110,9 @@ final class PhotoCell: UICollectionViewCell {
             self.selectionOverlayView.alpha = 0.0
         }
     }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.imageView.image = nil
+    }
 }
