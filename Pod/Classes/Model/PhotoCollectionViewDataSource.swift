@@ -60,6 +60,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     init(fetchResult: PHFetchResult<PHAsset>, selections: [PHAsset]? = nil, settings: BSImagePickerSettings?) {
         super.init()
         stopCachedAssetes()
+        photosManager.allowsCachingHighQualityImages = false
         self.initFetchResult(fetchResult)
         self.settings = settings
         if let selections = selections {
