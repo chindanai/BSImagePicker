@@ -543,7 +543,7 @@ extension PhotosViewController {
             collectionViewFlowLayout.itemsPerRow = cellsPerRow
             
             let imageSize = collectionViewFlowLayout.itemSize
-            let retinaScale = 2 // have a bug on retina scale = 3
+            let retinaScale: CGFloat = 2 // have a bug on retina scale = 3
             let retinaSize = CGSize(width: imageSize.width * retinaScale, height: imageSize.height * retinaScale)
             photosDataSource?.imageSize = retinaSize
             
