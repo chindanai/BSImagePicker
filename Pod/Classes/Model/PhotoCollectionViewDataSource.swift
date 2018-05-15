@@ -102,11 +102,6 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
         
-        // Canecel any pending editing request
-        if cell.editingInputId != -1 {
-            asset.cancelContentEditingInputRequest(cell.editingInputId)
-        }
-        
         // Request image
         cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             if cell.asset?.localIdentifier == asset.localIdentifier {
@@ -184,7 +179,12 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     private func assetsAtIndexPaths(_ indexPaths: [IndexPath]) -> [PHAsset] {
-        let assets = indexPaths.map{assetAtIndexPath($0)}
+        var assets = [PHAsset]()
+        for indexPath in indexPaths {
+            let asset = assetAtIndexPath(indexPath)
+            assets.append(indexPath)
+        }
+        
         return assets
     }
     
