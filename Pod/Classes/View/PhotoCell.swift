@@ -37,6 +37,8 @@ final class PhotoCell: UICollectionViewCell {
     var editingInputId = -1
     var requestImageId = -1
     
+    var assetId: String?
+    
     var hiddenGif = false {
         didSet {
             updateGifUI()

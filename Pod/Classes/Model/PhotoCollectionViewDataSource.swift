@@ -43,6 +43,11 @@ extension UICollectionView {
         
         return indexPaths
     }
+    
+    func indexPathsForElements(in rect: CGRect) -> [IndexPath] {
+        let allLayoutAttributes = collectionViewLayout.layoutAttributesForElements(in: rect)!
+        return allLayoutAttributes.map { $0.indexPath }
+    }
 }
 
 final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource {
@@ -61,7 +66,6 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     init(fetchResult: PHFetchResult<PHAsset>, selections: [PHAsset]? = nil, settings: BSImagePickerSettings?) {
         super.init()
         stopCachedAssetes()
-        photosManager.allowsCachingHighQualityImages = false
         self.initFetchResult(fetchResult)
         self.settings = settings
         if let selections = selections {
@@ -75,7 +79,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     
     func assetAtIndexPath(_ indexPath: IndexPath) -> PHAsset {
         let reversedIndex = fetchResult.count - indexPath.item - 1
-        let asset = fetchResult[reversedIndex]
+        let asset = fetchResult.object(at: reversedIndex)
         return asset
     }
     
@@ -96,18 +100,19 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         }
         
         // Cancel any pending image requests
-        if cell.requestImageId != -1 {
-            manager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
-        }
+//        if cell.requestImageId != -1 {
+//            photosManager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
+//        }
 
         
         let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
+        cell.assetId = asset.localIdentifier
         
         // Request image
-        cell.requestImageId = Int(manager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             DispatchQueue.main.async {
-                if cell.asset?.localIdentifier == asset.localIdentifier {
+                if cell.assetId == asset.localIdentifier {
                     if let result = result {
                         cell.imageView.image = result
                     }
@@ -195,74 +200,56 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func updateCachedAssets(_ collectionView: UICollectionView) {
-        return
         // The preheat window is twice the height of the visible rect.
-        var preheatRect = collectionView.bounds
-        preheatRect = preheatRect.insetBy(dx: 0.0, dy: -0.5 * preheatRect.size.height)
+        let visibleRect = CGRect(origin: collectionView.contentOffset, size: collectionView.bounds.size)
+        let preheatRect = visibleRect.insetBy(dx: 0, dy: -0.5 * visibleRect.height)
         
-        /*
-         Check if the collection view is showing an area that is significantly
-         different to the last preheated area.
-         */
+        // Update only if the visible area is significantly different from the last preheated area.
         let delta = abs(preheatRect.midY - previousPreheatRect.midY)
-        if delta > collectionView.bounds.size.height / 3.0 {
-            
-            // Compute the assets to start caching and to stop caching.
-            var addedIndexPaths: [IndexPath] = []
-            var removedIndexPaths: [IndexPath] = []
-            
-            self.computeDifferenceBetweenRect(self.previousPreheatRect, andRect: preheatRect, removedHandler: { removedRect in
-                if let indexPaths = collectionView.indexPathForElementInRects(removedRect) {
-                    removedIndexPaths += indexPaths
-                }
-            }, addedHandler: { addedRect in
-                if let indexPaths = collectionView.indexPathForElementInRects(addedRect) {
-                    addedIndexPaths += indexPaths
-                }
-            })
-            
-            let assetsToStartCaching = self.assetsAtIndexPaths(addedIndexPaths)
-            let assetsToStopCaching = self.assetsAtIndexPaths(removedIndexPaths)
-            
-            // Update the assets the PHCachingImageManager is caching.
-            photosManager.startCachingImages(for: assetsToStartCaching, targetSize: imageSize, contentMode: imageContentMode, options: nil)
-            photosManager.stopCachingImages(for: assetsToStopCaching, targetSize: imageSize, contentMode: imageContentMode, options: nil)
-            
-            // Store the preheat rect to compare against in the future.
-            self.previousPreheatRect = preheatRect
-        }
+        guard delta > UIScreen.main.bounds.size.height / 3 else { return }
+        
+        // Compute the assets to start caching and to stop caching.
+        let (addedRects, removedRects) = differencesBetweenRects(previousPreheatRect, preheatRect)
+        let addedAssets = addedRects
+            .flatMap { rect in collectionView.indexPathsForElements(in: rect) }
+            .map { indexPath in fetchResult.object(at: indexPath.item) }
+        let removedAssets = removedRects
+            .flatMap { rect in collectionView.indexPathsForElements(in: rect) }
+            .map { indexPath in fetchResult.object(at: indexPath.item) }
+        
+        // Update the assets the PHCachingImageManager is caching.
+        photosManager.startCachingImages(for: addedAssets,
+                                        targetSize: imageSize, contentMode: imageContentMode, options: nil)
+        photosManager.stopCachingImages(for: removedAssets,
+                                       targetSize: imageSize, contentMode: imageContentMode, options: nil)
+        
+        // Store the preheat rect to compare against in the future.
+        previousPreheatRect = preheatRect
     }
     
-    private func computeDifferenceBetweenRect(_ oldRect: CGRect, andRect newRect: CGRect, removedHandler: (CGRect)->Void, addedHandler: (CGRect)->Void) {
-        
-        if newRect.intersects(oldRect) {
-            let oldMaxY = oldRect.maxY
-            let oldMinY = oldRect.minY
-            let newMaxY = newRect.maxY
-            let newMinY = newRect.minY
-            
-            if newMaxY > oldMaxY {
-                let rectToAdd = CGRect(x: newRect.origin.x, y: oldMaxY, width: newRect.size.width, height: (newMaxY - oldMaxY))
-                addedHandler(rectToAdd)
+    fileprivate func differencesBetweenRects(_ old: CGRect, _ new: CGRect) -> (added: [CGRect], removed: [CGRect]) {
+        if old.intersects(new) {
+            var added = [CGRect]()
+            if new.maxY > old.maxY {
+                added += [CGRect(x: new.origin.x, y: old.maxY,
+                                 width: new.width, height: new.maxY - old.maxY)]
             }
-            
-            if oldMinY > newMinY {
-                let rectToAdd = CGRect(x: newRect.origin.x, y: newMinY, width: newRect.size.width, height: (oldMinY - newMinY))
-                addedHandler(rectToAdd)
+            if old.minY > new.minY {
+                added += [CGRect(x: new.origin.x, y: new.minY,
+                                 width: new.width, height: old.minY - new.minY)]
             }
-            
-            if newMaxY < oldMaxY {
-                let rectToRemove = CGRect(x: newRect.origin.x, y: newMaxY, width: newRect.size.width, height: (oldMaxY - newMaxY))
-                removedHandler(rectToRemove)
+            var removed = [CGRect]()
+            if new.maxY < old.maxY {
+                removed += [CGRect(x: new.origin.x, y: new.maxY,
+                                   width: new.width, height: old.maxY - new.maxY)]
             }
-            
-            if oldMinY < newMinY {
-                let rectToRemove = CGRect(x: newRect.origin.x, y: oldMinY, width: newRect.size.width, height: (newMinY - oldMinY))
-                removedHandler(rectToRemove)
+            if old.minY < new.minY {
+                removed += [CGRect(x: new.origin.x, y: old.minY,
+                                   width: new.width, height: new.minY - old.minY)]
             }
+            return (added, removed)
         } else {
-            addedHandler(newRect)
-            removedHandler(oldRect)
+            return ([new], [old])
         }
     }
 }
