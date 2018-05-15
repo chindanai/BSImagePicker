@@ -169,6 +169,10 @@ final class PhotosViewController : UICollectionViewController {
         }
     }
     
+    override func didReceiveMemoryWarning() {
+        photosDataSource?.stopCachedAssetes()
+    }
+    
     // MARK: Button actions
     func cancelButtonPressed(_ sender: UIBarButtonItem) {
         guard let closure = cancelClosure, let photosDataSource = photosDataSource else {

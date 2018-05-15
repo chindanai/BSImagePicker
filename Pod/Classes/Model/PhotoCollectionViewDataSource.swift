@@ -94,22 +94,22 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         }
         
         // Cancel any pending image requests
-//        if cell.requestImageId != -1 {
-//            photosManager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
-//        }
+        if cell.requestImageId != -1 {
+            photosManager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
+        }
 
         
         let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
         
         // Request image
-        photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             if cell.asset?.localIdentifier == asset.localIdentifier {
                 if let result = result {
                     cell.imageView.image = result
                 }
             }
-        }
+        })
         
         // Request Editing input
         
@@ -179,12 +179,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     private func assetsAtIndexPaths(_ indexPaths: [IndexPath]) -> [PHAsset] {
-        var assets = [PHAsset]()
-        for indexPath in indexPaths {
-            let asset = assetAtIndexPath(indexPath)
-            assets.append(asset)
-        }
-        
+        let assets = indexPaths.map{assetAtIndexPath($0)}
         return assets
     }
     
