@@ -94,22 +94,22 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         }
         
         // Cancel any pending image requests
-        if cell.requestImageId != -1 {
-            photosManager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
-        }
+//        if cell.requestImageId != -1 {
+//            photosManager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
+//        }
 
         
         let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
         
         // Request image
-        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+        photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             if cell.asset?.localIdentifier == asset.localIdentifier {
                 if let result = result {
                     cell.imageView.image = result
                 }
             }
-        })
+        }
         
         // Request Editing input
         
