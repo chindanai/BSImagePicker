@@ -32,7 +32,7 @@ final class PhotoCell: UICollectionViewCell {
     @IBOutlet weak var selectionView: SelectionView!
     @IBOutlet fileprivate weak var gifBadge: UIView!
     
-    var asset: PHAsset?
+    weak var asset: PHAsset?
     
     var editingInputId = -1
     var requestImageId = -1

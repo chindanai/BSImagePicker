@@ -72,8 +72,8 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func assetAtIndexPath(_ indexPath: IndexPath) -> PHAsset {
-        let reversedIndex = fetchResult.count - indexPath.item - 1
-        let asset = fetchResult[reversedIndex]
+        //let reversedIndex = fetchResult.count - indexPath.item - 1
+        let asset = fetchResult[indexPath.item]
         return asset
     }
     
