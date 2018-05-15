@@ -110,7 +110,9 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         // Request image
         cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             if cell.asset?.localIdentifier == asset.localIdentifier {
-                cell.imageView.image = result
+                if let result = result {
+                    cell.imageView.image = result
+                }
             }
         })
         
