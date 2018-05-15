@@ -22,6 +22,7 @@
 
 import UIKit
 import Photos
+import MobileCoreServices
 
 /**
 Gives UICollectionViewDataSource functionality with a given data source and cell factory
@@ -30,7 +31,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     var selections = [PHAsset]()
     var fetchResult: PHFetchResult<PHAsset>! {
         willSet {
-            //photosManager.stopCachingImagesForAllAssets()
+            photosManager.stopCachingImagesForAllAssets()
         }
         didSet {
             var assets = [PHAsset]()
@@ -39,14 +40,14 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             })
             self.assets = assets
             self.assets.reverse()
-            //photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
+            photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
         }
     }
     
     fileprivate var assets: [PHAsset]!
     
     fileprivate let photoCellIdentifier = "photoCellIdentifier"
-    fileprivate let photosManager = PHImageManager.default()
+    fileprivate let photosManager = PHCachingImageManager()
     fileprivate let imageContentMode: PHImageContentMode = .aspectFill
     
     var settings: BSImagePickerSettings?
@@ -88,17 +89,25 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         }
         
         // Cancel any pending image requests
-        if cell.tag != 0 {
-            photosManager.cancelImageRequest(PHImageRequestID(cell.tag))
+        if cell.requestImageId != -1 {
+            photosManager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
         }
+
         
         let asset = assetAtIndexPath(indexPath)
         cell.asset = asset
         
+        // Canecel any pending editing request
+        if cell.editingInputId != -1 {
+            asset.cancelContentEditingInputRequest(cell.editingInputId)
+        }
+        
         // Request image
-        cell.tag = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil) { (result, _) in
             cell.imageView.image = result
         })
+        
+        // Request Editing input
         
         // Set selection number
         if let index = selections.index(of: asset) {
@@ -114,6 +123,17 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         }
         
          cell.hiddenGif = true
+        
+        // Request editing input
+        let options = PHContentEditingInputRequestOptions()
+        options.isNetworkAccessAllowed = true
+        cell.editingInputId = asset.requestContentEditingInput(with: options) { (contentEditingInput, _) in
+            if let uniformTypeIdentifier = contentEditingInput?.uniformTypeIdentifier {
+                if uniformTypeIdentifier == (kUTTypeGIF as String) {
+                    cell.hiddenGif = false
+                }
+            }
+        }
 //         if settings?.enableGif ?? false && selections.count == 0 {
 //            var isGif = false
 //            DispatchQueue.global().async() {

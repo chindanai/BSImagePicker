@@ -33,6 +33,10 @@ final class PhotoCell: UICollectionViewCell {
     @IBOutlet fileprivate weak var gifBadge: UIView!
     
     weak var asset: PHAsset?
+    
+    var editingInputId = -1
+    var requestImageId = -1
+    
     var hiddenGif = false {
         didSet {
             updateGifUI()
