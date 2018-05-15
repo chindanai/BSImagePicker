@@ -204,26 +204,29 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
          different to the last preheated area.
          */
         let delta = abs(preheatRect.midY - previousPreheatRect.midY)
-        if delta > collectionView.bounds.size.height / 3.0 {
+        if delta > collectionView.bounds.size.height / 2.0 {
             
             // Compute the assets to start caching and to stop caching.
             var addedIndexPaths: [IndexPath] = []
             var removedIndexPaths: [IndexPath] = []
             
-            self.computeDifferenceBetweenRect(self.previousPreheatRect, andRect: preheatRect, removedHandler: { [weak self] removedRect in
-                // Update the assets the PHCachingImageManager is caching.
-                if let indexPaths = collectionView.indexPathForElementInRects(removedRect), let assetsToStopCaching = self?.assetsAtIndexPaths(removedIndexPaths) {
+            self.computeDifferenceBetweenRect(self.previousPreheatRect, andRect: preheatRect, removedHandler: { removedRect in
+                if let indexPaths = collectionView.indexPathForElementInRects(removedRect) {
                     removedIndexPaths += indexPaths
-                    self?.photosManager.stopCachingImages(for: assetsToStopCaching, targetSize: imageSize, contentMode: imageContentMode, options: nil)
                 }
-            }, addedHandler: { [weak self] addedRect in
-                // Update the assets the PHCachingImageManager is caching.
-                if let indexPaths = collectionView.indexPathForElementInRects(addedRect), let assetsToStartCaching = self?.assetsAtIndexPaths(addedIndexPaths) {
+            }, addedHandler: { addedRect in
+                if let indexPaths = collectionView.indexPathForElementInRects(addedRect) {
                     addedIndexPaths += indexPaths
-                    self?.photosManager.startCachingImages(for: assetsToStartCaching, targetSize: imageSize, contentMode: imageContentMode, options: nil)
                 }
             })
-
+            
+            let assetsToStartCaching = self.assetsAtIndexPaths(addedIndexPaths)
+            let assetsToStopCaching = self.assetsAtIndexPaths(removedIndexPaths)
+            
+            // Update the assets the PHCachingImageManager is caching.
+            photosManager.startCachingImages(for: assetsToStartCaching, targetSize: imageSize, contentMode: imageContentMode, options: nil)
+            photosManager.stopCachingImages(for: assetsToStopCaching, targetSize: imageSize, contentMode: imageContentMode, options: nil)
+            
             // Store the preheat rect to compare against in the future.
             self.previousPreheatRect = preheatRect
         }
