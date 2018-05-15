@@ -51,6 +51,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
 
     fileprivate let photoCellIdentifier = "photoCellIdentifier"
     fileprivate let photosManager = PHCachingImageManager()
+    fileprivate let manager = PHImageManager.default()
     fileprivate let imageContentMode: PHImageContentMode = .aspectFill
     
     var settings: BSImagePickerSettings?
@@ -96,7 +97,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         
         // Cancel any pending image requests
         if cell.requestImageId != -1 {
-            photosManager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
+            manager.cancelImageRequest(PHImageRequestID(cell.requestImageId))
         }
 
         
@@ -104,7 +105,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         cell.asset = asset
         
         // Request image
-        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.requestImageId = Int(manager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
             DispatchQueue.main.async {
                 if cell.asset?.localIdentifier == asset.localIdentifier {
                     if let result = result {
@@ -194,7 +195,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     }
     
     func updateCachedAssets(_ collectionView: UICollectionView) {
-        
+        return
         // The preheat window is twice the height of the visible rect.
         var preheatRect = collectionView.bounds
         preheatRect = preheatRect.insetBy(dx: 0.0, dy: -0.5 * preheatRect.size.height)
