@@ -204,7 +204,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
          different to the last preheated area.
          */
         let delta = abs(preheatRect.midY - previousPreheatRect.midY)
-        if delta > collectionView.bounds.size.height / 2.0 {
+        if delta > collectionView.bounds.size.height / 3.0 {
             
             // Compute the assets to start caching and to stop caching.
             var addedIndexPaths: [IndexPath] = []
