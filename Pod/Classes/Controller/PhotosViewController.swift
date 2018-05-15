@@ -70,6 +70,8 @@ final class PhotosViewController : UICollectionViewController {
     
     fileprivate var doneBarButtonTitle: String?
     
+    fileprivate var isDecelerating = false
+    
     lazy var albumsViewController: AlbumsViewController = {
         let storyboard = UIStoryboard(name: "Albums", bundle: BSImagePickerViewController.bundle)
         let vc = storyboard.instantiateInitialViewController() as! AlbumsViewController
@@ -380,7 +382,7 @@ final class PhotosViewController : UICollectionViewController {
 // MARK: UICollectionViewDelegate
 extension PhotosViewController {
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard self.isViewLoaded && self.view.window != nil && scrollView.isDecelerating else {
+        guard self.isViewLoaded && self.view.window != nil && !isDecelerating else {
             return
         }
         
@@ -390,11 +392,15 @@ extension PhotosViewController {
     }
     
     override func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        isDecelerating = true
         photosDataSource?.stopCachedAssetes()
     }
 
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        
+        isDecelerating = false
+        if let castedCollectionView = scrollView as? UICollectionView {
+            photosDataSource?.updateCachedAssets(castedCollectionView)
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
