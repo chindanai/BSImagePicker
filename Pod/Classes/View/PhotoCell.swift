@@ -32,7 +32,7 @@ final class PhotoCell: UICollectionViewCell {
     @IBOutlet weak var selectionView: SelectionView!
     @IBOutlet fileprivate weak var gifBadge: UIView!
     
-    weak var asset: PHAsset?
+    var asset: PHAsset?
     
     var editingInputId = -1
     var requestImageId = -1
@@ -110,6 +110,7 @@ final class PhotoCell: UICollectionViewCell {
             self.selectionOverlayView.alpha = 0.0
         }
     }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
