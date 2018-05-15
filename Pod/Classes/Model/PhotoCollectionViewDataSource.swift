@@ -27,6 +27,12 @@ import MobileCoreServices
 /**
 Gives UICollectionViewDataSource functionality with a given data source and cell factory
 */
+
+struct PhotoAssetGifItem {
+    var asset: PHAsset!
+    var ifGif = false
+}
+
 final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource {
     var selections = [PHAsset]()
     var fetchResult: PHFetchResult<PHAsset>! {
@@ -40,7 +46,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
             })
             self.assets = assets
             self.assets.reverse()
-            photosManager.startCachingImages(for: assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
+            photosManager.startCachingImages(for: self.assets, targetSize: CGSize(width: 300, height: 300), contentMode: imageContentMode, options: nil)
         }
     }
     
@@ -124,16 +130,27 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         
          cell.hiddenGif = true
         
-        // Request editing input
-        let options = PHContentEditingInputRequestOptions()
-        options.isNetworkAccessAllowed = true
-        cell.editingInputId = asset.requestContentEditingInput(with: options) { (contentEditingInput, _) in
-            if let uniformTypeIdentifier = contentEditingInput?.uniformTypeIdentifier {
-                if uniformTypeIdentifier == (kUTTypeGIF as String) {
-                    cell.hiddenGif = false
-                }
+        // 3
+        
+        if let identifier = asset.value(forKey: "uniformTypeIdentifier") as? String {
+            if identifier == kUTTypeGIF as String {
+                cell.hiddenGif = false
             }
         }
+        
+        
+        // Request editing input
+        // 2
+//        let options = PHContentEditingInputRequestOptions()
+//        options.isNetworkAccessAllowed = true
+//        cell.editingInputId = asset.requestContentEditingInput(with: options) { (contentEditingInput, _) in
+//            if let uniformTypeIdentifier = contentEditingInput?.uniformTypeIdentifier {
+//                if uniformTypeIdentifier == (kUTTypeGIF as String) {
+//                    cell.hiddenGif = false
+//                }
+//            }
+//        }
+        // 1
 //         if settings?.enableGif ?? false && selections.count == 0 {
 //            var isGif = false
 //            DispatchQueue.global().async() {
