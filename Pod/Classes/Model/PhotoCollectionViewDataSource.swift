@@ -110,7 +110,7 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         cell.assetId = asset.localIdentifier
         
         // Request image
-        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+        cell.requestImageId = Int(photosManager.requestImage(for: asset, targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil) { (result, _) in
             DispatchQueue.main.async {
                 if cell.assetId == asset.localIdentifier {
                     if let result = result {
@@ -219,9 +219,9 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
         
         // Update the assets the PHCachingImageManager is caching.
         photosManager.startCachingImages(for: addedAssets,
-                                        targetSize: imageSize, contentMode: imageContentMode, options: nil)
+                                        targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil)
         photosManager.stopCachingImages(for: removedAssets,
-                                       targetSize: imageSize, contentMode: imageContentMode, options: nil)
+                                       targetSize: CGSize(width: 200, height: 200), contentMode: imageContentMode, options: nil)
         
         // Store the preheat rect to compare against in the future.
         previousPreheatRect = preheatRect
