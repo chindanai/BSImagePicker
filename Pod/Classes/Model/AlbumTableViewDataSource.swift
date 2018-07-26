@@ -63,24 +63,40 @@ final class AlbumTableViewDataSource : NSObject, UITableViewDataSource {
         ]
         fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
         
+        cell.firstImageView.isHidden = true
+        cell.secondImageView.isHidden = true
+        cell.thirdImageView.isHidden = true
+        
+        cell.firstImageView.backgroundColor = UIColor.lightGray
+        cell.secondImageView.backgroundColor = UIColor.lightGray
+        cell.thirdImageView.backgroundColor = UIColor.lightGray
+        
         let result = PHAsset.fetchAssets(in: album, options: fetchOptions)
         result.enumerateObjects({ (asset, idx, stop) in
+            let retinaScale: CGFloat = 2 // have a bug on retina scale = 3
             let imageSize = CGSize(width: 79, height: 79)
+            let retinaSize = CGSize(width: imageSize.width * retinaScale, height: imageSize.height * retinaScale)
             let imageContentMode: PHImageContentMode = .aspectFill
             switch idx {
             case 0:
-                PHCachingImageManager.default().requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+                PHCachingImageManager.default().requestImage(for: asset, targetSize: retinaSize, contentMode: imageContentMode, options: nil) { (result, _) in
+                    guard let result = result else { return }
+                    cell.firstImageView.isHidden = false
+                    cell.firstImageView.backgroundColor = UIColor.clear
                     cell.firstImageView.image = result
-                    cell.secondImageView.image = result
-                    cell.thirdImageView.image = result
                 }
             case 1:
-                PHCachingImageManager.default().requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+                PHCachingImageManager.default().requestImage(for: asset, targetSize: retinaSize, contentMode: imageContentMode, options: nil) { (result, _) in
+                    guard let result = result else { return }
+                    cell.secondImageView.isHidden = false
+                    cell.secondImageView.backgroundColor = UIColor.clear
                     cell.secondImageView.image = result
-                    cell.thirdImageView.image = result
                 }
             case 2:
-                PHCachingImageManager.default().requestImage(for: asset, targetSize: imageSize, contentMode: imageContentMode, options: nil) { (result, _) in
+                PHCachingImageManager.default().requestImage(for: asset, targetSize: retinaSize, contentMode: imageContentMode, options: nil) { (result, _) in
+                    guard let result = result else { return }
+                    cell.thirdImageView.isHidden = false
+                    cell.thirdImageView.backgroundColor = UIColor.clear
                     cell.thirdImageView.image = result
                 }
                 
