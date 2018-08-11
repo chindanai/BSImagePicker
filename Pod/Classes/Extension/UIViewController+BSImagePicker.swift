@@ -26,6 +26,7 @@ import Photos
 /**
 Extension on UIViewController to simply presentation of BSImagePicker
 */
+
 public extension UIViewController {
     /**
         Present a given image picker with closures, any of the closures can be nil.
@@ -38,12 +39,16 @@ public extension UIViewController {
         - parameter finish: Closure to call when user finishes or nil
         - parameter completion: presentation completed closure or nil
     */
-    func bs_presentImagePickerController(_ imagePicker: BSImagePickerViewController, animated: Bool, select: ((_ asset: PHAsset) -> Void)?, deselect: ((_ asset: PHAsset) -> Void)?, cancel: (([PHAsset]) -> Void)?, finishWithGif: (([PHAsset]) -> Void)?, finish: (([PHAsset]) -> Void)?, completion: (() -> Void)?) {
+    func bs_presentImagePickerController(_ imagePicker: BSImagePickerViewController, animated: Bool, fetchResultsAfterAuthCompletion: (()->([PHFetchResult<PHAssetCollection>]?))? = nil, select: ((_ asset: PHAsset) -> Void)?, deselect: ((_ asset: PHAsset) -> Void)?, cancel: (([PHAsset]) -> Void)?, finishWithGif: (([PHAsset]) -> Void)?, finish: (([PHAsset]) -> Void)?, completion: (() -> Void)?) {
         BSImagePickerViewController.authorize(fromViewController: self) { (authorized) -> Void in
             // Make sure we are authorized before proceding
             guard authorized == true else { return }
             
             // Set blocks
+            if let fetchResults = fetchResultsAfterAuthCompletion?() {
+                imagePicker.fetchResults = fetchResults
+            }
+            
             imagePicker.photosViewController.selectionClosure = select
             imagePicker.photosViewController.deselectionClosure = deselect
             imagePicker.photosViewController.cancelClosure = cancel
