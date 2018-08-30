@@ -420,8 +420,9 @@ extension PhotosViewController {
         }
 
         // Make sure we have a data source and that we can make selections
-        guard let photosDataSource = photosDataSource, collectionView.isUserInteractionEnabled else { return false }
-
+        let photoDatasourceSection = composedDataSource?.dataSources.index(where: {$0 is PhotoCollectionViewDataSource}) ?? -1
+        guard let photosDataSource = photosDataSource, collectionView.isUserInteractionEnabled, photoDatasourceSection != -1 else { return false }
+        
         // We need a cell
         guard let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell else { return false }
         let asset = photosDataSource.assetAtIndexPath(indexPath)
@@ -438,7 +439,7 @@ extension PhotosViewController {
             let selectedIndexPaths = photosDataSource.selections.flatMap({ (asset) -> IndexPath? in
                 let index = photosDataSource.fetchResult.index(of: asset)
                 guard index != NSNotFound else { return nil }
-                return IndexPath(item: index, section: 1)
+                return IndexPath(item: index, section: photoDatasourceSection)
             })
 
             // Reload selected cells to update their selection number
