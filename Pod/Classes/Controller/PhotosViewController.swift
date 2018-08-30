@@ -61,6 +61,7 @@ final class PhotosViewController : UICollectionViewController {
     fileprivate var photosDataSource: PhotoCollectionViewDataSource?
     fileprivate var albumsDataSource: AlbumTableViewDataSource?
     fileprivate let cameraDataSource: CameraCollectionViewDataSource
+    fileprivate let customActionDataSource: BSCustomActionDataSource
     fileprivate var composedDataSource: ComposedCollectionViewDataSource?
     
     fileprivate var defaultSelections: [PHAsset]?
@@ -88,6 +89,7 @@ final class PhotosViewController : UICollectionViewController {
     required init(fetchResults: [PHFetchResult<PHAssetCollection>], defaultSelections: [PHAsset]? = nil, settings aSettings: BSImagePickerSettings) {
         albumsDataSource = AlbumTableViewDataSource(fetchResults: fetchResults)
         cameraDataSource = CameraCollectionViewDataSource(settings: aSettings, cameraAvailable: UIImagePickerController.isSourceTypeAvailable(.camera))
+        customActionDataSource = BSCustomActionDataSource(settings: aSettings)
         self.defaultSelections = defaultSelections
         settings = aSettings
         
@@ -98,6 +100,7 @@ final class PhotosViewController : UICollectionViewController {
     
     required init(filteredResults: PHFetchResult<PHAsset>, defaultSelections: [PHAsset]? = nil, settings aSettings: BSImagePickerSettings) {
         cameraDataSource = CameraCollectionViewDataSource(settings: aSettings, cameraAvailable: UIImagePickerController.isSourceTypeAvailable(.camera))
+        customActionDataSource = BSCustomActionDataSource(settings: aSettings)
         self.filteredResults = filteredResults
         self.defaultSelections = defaultSelections
         settings = aSettings
@@ -154,6 +157,7 @@ final class PhotosViewController : UICollectionViewController {
         // Register cells
         photosDataSource?.registerCellIdentifiersForCollectionView(collectionView)
         cameraDataSource.registerCellIdentifiersForCollectionView(collectionView)
+        customActionDataSource.registerCellIdentifiersForCollectionView(collectionView)
     }
     
     // MARK: Appear/Disappear
@@ -373,7 +377,7 @@ final class PhotosViewController : UICollectionViewController {
         photosDataSource = newDataSource
         
         // Hook up data source
-        composedDataSource = ComposedCollectionViewDataSource(dataSources: [cameraDataSource, newDataSource])
+        composedDataSource = ComposedCollectionViewDataSource(dataSources: [cameraDataSource, customActionDataSource, newDataSource])
         collectionView?.dataSource = composedDataSource
         collectionView?.delegate = self
     }
@@ -397,15 +401,22 @@ extension PhotosViewController {
         // We can manage it ourself.
 
         // Camera shouldn't be selected, but pop the UIImagePickerController!
-        if let composedDataSource = composedDataSource , composedDataSource.dataSources[indexPath.section].isEqual(cameraDataSource) {
-            let cameraController = UIImagePickerController()
-            cameraController.allowsEditing = false
-            cameraController.sourceType = .camera
-            cameraController.delegate = self
-            
-            self.present(cameraController, animated: true, completion: nil)
-            
-            return false
+        if let composedDataSource = composedDataSource  {
+            if composedDataSource.dataSources[indexPath.section].isEqual(cameraDataSource) {
+                let cameraController = UIImagePickerController()
+                cameraController.allowsEditing = false
+                cameraController.sourceType = .camera
+                cameraController.delegate = self
+                
+                self.present(cameraController, animated: true, completion: nil)
+                
+                return false
+            } else if composedDataSource.dataSources[indexPath.section].isEqual(customActionDataSource) {
+                let action = settings.customActions?[indexPath.item]
+                action?.action?(self.navigationController)
+                
+                return false
+            }
         }
 
         // Make sure we have a data source and that we can make selections

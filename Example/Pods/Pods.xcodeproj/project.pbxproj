@@ -27,6 +27,9 @@
 		4071F7E71609F401003D3230893C521E /* BSImagePickerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2F74234312E5953862B5A199F81D277 /* BSImagePickerSettings.swift */; };
 		4546E3FB56F3693D2893B773F71C3097 /* BSImagePicker-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FC4652B08A1600EEE45D96B6712A7A8 /* BSImagePicker-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		49DD0C7E95B1CDB0FFEB5BC2E745BACA /* arrow_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 41434C6C3BB9C93164E3A0B4692BADDF /* arrow_down@2x.png */; };
+		4C8670622137C434000DE168 /* BSCustomCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8670612137C434000DE168 /* BSCustomCollectionViewCell.swift */; };
+		4C8670662137CFDA000DE168 /* BSCustomAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8670652137CFDA000DE168 /* BSCustomAction.swift */; };
+		4C8670682137D09C000DE168 /* BSCustomActionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8670672137D09C000DE168 /* BSCustomActionDataSource.swift */; };
 		4CAA4AD01F77DF3F004C2C68 /* PHAsset+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CAA4ACF1F77DF3F004C2C68 /* PHAsset+GIF.swift */; };
 		4D84C6E12A0C8733B588B202983465E2 /* CameraCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DD589D627C60080627D1CF75BD9815 /* CameraCollectionViewDataSource.swift */; };
 		4F397C023D1298B181F933E6C3453FE4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01AFC5762A4310C5AC17337E786B6435 /* Foundation.framework */; };
@@ -146,6 +149,9 @@
 		418623CC5F10B7B4D8B7120E16C1868E /* GridCollectionViewLayout.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GridCollectionViewLayout.swift; path = Pod/Classes/GridCollectionViewLayout.swift; sourceTree = "<group>"; };
 		425A72440AF028F540D620AFF22B1046 /* Pods-BSImagePicker_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-BSImagePicker_Tests.modulemap"; sourceTree = "<group>"; };
 		42D58003D920CA7BF034E390A20ED51F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		4C8670612137C434000DE168 /* BSCustomCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSCustomCollectionViewCell.swift; sourceTree = "<group>"; };
+		4C8670652137CFDA000DE168 /* BSCustomAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSCustomAction.swift; sourceTree = "<group>"; };
+		4C8670672137D09C000DE168 /* BSCustomActionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSCustomActionDataSource.swift; sourceTree = "<group>"; };
 		4CAA4ACF1F77DF3F004C2C68 /* PHAsset+GIF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAsset+GIF.swift"; sourceTree = "<group>"; };
 		4F48B3EE9B4A216C557827C03F1A0766 /* UIImageViewModeScaleAspect.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIImageViewModeScaleAspect.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FA0B053CFEEFAF4307FEC563A29E513 /* BSGridCollectionViewLayout-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BSGridCollectionViewLayout-prefix.pch"; sourceTree = "<group>"; };
@@ -287,9 +293,11 @@
 			children = (
 				A81F60675FC62437C1CF53E1714BAF52 /* AlbumTableViewDataSource.swift */,
 				63DD589D627C60080627D1CF75BD9815 /* CameraCollectionViewDataSource.swift */,
+				4C8670672137D09C000DE168 /* BSCustomActionDataSource.swift */,
 				7B4FC4A0D20DB0EEEF28D022454DBEB1 /* ComposedCollectionViewDataSource.swift */,
 				F82038D408B98900D1CA1747F5A0E0A5 /* PhotoCollectionViewDataSource.swift */,
 				92121642335D51FEFD0F7951B1AC198C /* Settings.swift */,
+				4C8670652137CFDA000DE168 /* BSCustomAction.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -423,6 +431,7 @@
 				7DDD3313E9FAA24687062DD131312A19 /* CameraCell.swift */,
 				165336F722000CEC831E86805289995C /* PhotoCell.swift */,
 				B0D7D5EE204667192AEAD22F01C8E7AB /* SelectionView.swift */,
+				4C8670612137C434000DE168 /* BSCustomCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -807,10 +816,13 @@
 				B1927E98C38A2CDD6C23041D49CADD54 /* CameraCell.swift in Sources */,
 				4D84C6E12A0C8733B588B202983465E2 /* CameraCollectionViewDataSource.swift in Sources */,
 				388C79FE83038778DBEA5D170B49202F /* ComposedCollectionViewDataSource.swift in Sources */,
+				4C8670682137D09C000DE168 /* BSCustomActionDataSource.swift in Sources */,
 				4CAA4AD01F77DF3F004C2C68 /* PHAsset+GIF.swift in Sources */,
 				B79E301617D79296C73248C6279EC78A /* NSIndexSet+NSIndexPath.swift in Sources */,
 				051836FBCF1F0B1968ABC0F2AA7D123A /* PhotoCell.swift in Sources */,
 				1EC10A9CF4C9B064BA5411711E59E580 /* PhotoCollectionViewDataSource.swift in Sources */,
+				4C8670662137CFDA000DE168 /* BSCustomAction.swift in Sources */,
+				4C8670622137C434000DE168 /* BSCustomCollectionViewCell.swift in Sources */,
 				5BF30D102110025508C05356BA13F8CD /* PhotosViewController.swift in Sources */,
 				CB1D5DF2292BAE15854DAA24B8D4A4CE /* PreviewViewController.swift in Sources */,
 				23D8703FA5DEE897EE64E590465BDEB5 /* SelectionView.swift in Sources */,

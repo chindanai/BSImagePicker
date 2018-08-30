@@ -31,6 +31,26 @@ class ViewController: UIViewController {
         vc.maxNumberOfSelections = 6
         vc.settings.enableGif = false
         
+        let action1 = BSCustomAction()
+        let view1 = CustomView.instanceView()
+        view1.titleText = "Camera"
+        action1.action = { bsVC in
+            print("Camera")
+            bsVC?.dismiss(animated: true, completion: nil)
+        }
+        action1.view = view1
+        
+        
+        let action2 = BSCustomAction()
+        let view2 = CustomView.instanceView()
+        view2.titleText = "Video"
+        action2.action = { bsVC in
+            print("Video")
+            bsVC?.dismiss(animated: true, completion: nil)
+        }
+        action2.view = view2
+    
+        vc.settings.customActions = [action1, action2]
         bs_presentImagePickerController(vc, animated: true, select: { (assets) in
             print("Selected: \(assets)")
         }, deselect: { (assets) in

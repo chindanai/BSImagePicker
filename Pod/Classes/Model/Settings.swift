@@ -64,4 +64,6 @@ final class Settings : BSImagePickerSettings {
     var enableGif: Bool = false
     
     var multipleSelectionMode: Bool = true
+    
+    var customActions: [BSCustomAction]? = nil
 }

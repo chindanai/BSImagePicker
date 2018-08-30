@@ -84,4 +84,6 @@ public protocol BSImagePickerSettings {
     var statusBarStyle: UIStatusBarStyle { get set }
     
     var dismissWhenFinished: Bool { get set }
+    
+    var customActions: [BSCustomAction]? { get set }
 }

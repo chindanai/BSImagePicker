@@ -302,6 +302,15 @@ extension BSImagePickerViewController: BSImagePickerSettings {
             settings.multipleSelectionMode = newValue
         }
     }
+    
+    public var customActions: [BSCustomAction]? {
+        get {
+            return settings.customActions
+        }
+        set {
+            settings.customActions = newValue
+        }
+    }
 }
 
 // MARK: Album button
