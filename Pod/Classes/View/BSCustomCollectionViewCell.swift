@@ -26,11 +26,19 @@ class BSCustomCollectionViewCell: UICollectionViewCell {
     fileprivate func updateUI() {
         self.subviews.forEach({$0.removeFromSuperview()})
 
-        
         if let customView = customView {
-            customView.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height)
+            customView.frame = CGRect.zero
             self.addSubview(customView)
-            customView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+            
+            setNeedsLayout()
+        }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    
+        if !self.frame.size.width.isNaN && !self.frame.size.height.isNaN {
+            customView?.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height)
         }
     }
 }
