@@ -9,7 +9,7 @@ import UIKit
 
 class BSCustomCollectionViewCell: UICollectionViewCell {
     
-    weak var customView: UIView? {
+    var customView: UIView? {
         didSet {
             updateUI()
         }
