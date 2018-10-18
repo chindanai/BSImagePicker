@@ -167,14 +167,6 @@ final class PhotosViewController : UICollectionViewController {
         updateDoneButton()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        if let collectionView = collectionView {
-            photosDataSource?.updateCachedAssets(collectionView)
-        }
-    }
-    
     // MARK: Button actions
     func cancelButtonPressed(_ sender: UIBarButtonItem) {
         guard let closure = cancelClosure, let photosDataSource = photosDataSource else {
@@ -386,13 +378,7 @@ final class PhotosViewController : UICollectionViewController {
 // MARK: UICollectionViewDelegate
 extension PhotosViewController {
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard self.isViewLoaded && self.view.window != nil else {
-            return
-        }
         
-        if let collectionView = collectionView {
-            photosDataSource?.updateCachedAssets(collectionView)
-        }
     }
     
     
@@ -641,14 +627,12 @@ extension PhotosViewController: PHPhotoLibraryChangeObserver {
                     
                     // Reload view
                     collectionView.reloadData()
-                    photosDataSource.stopCachedAssetes()
                 } else if photosChanges.hasIncrementalChanges == false {
                     // Update fetch result
                     photosDataSource.fetchResult = photosChanges.fetchResultAfterChanges as! PHFetchResult<PHAsset>
                     
                     // Reload view
                     collectionView.reloadData()
-                    photosDataSource.stopCachedAssetes()
                 }
             }
         })

@@ -46,11 +46,10 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     
     var settings: BSImagePickerSettings?
     var imageSize: CGSize = CGSize.zero
-    fileprivate var previousPreheatRect = CGRect.zero
     
     init(fetchResult: PHFetchResult<PHAsset>, selections: [PHAsset]? = nil, settings: BSImagePickerSettings?) {
         super.init()
-        stopCachedAssetes()
+
         self.initFetchResult(fetchResult)
         self.settings = settings
         if let selections = selections {
@@ -122,38 +121,6 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
                 }
             }
         }
-    
-        
-        // Request editing input
-        // 2
-//        if settings?.enableGif ?? false && selections.count == 0 {
-//            let options = PHContentEditingInputRequestOptions()
-//            options.isNetworkAccessAllowed = true
-//            cell.editingInputId = asset.requestContentEditingInput(with: options) { (contentEditingInput, _) in
-//                if let uniformTypeIdentifier = contentEditingInput?.uniformTypeIdentifier {
-//                    if uniformTypeIdentifier == (kUTTypeGIF as String) {
-//                        cell.hiddenGif = false
-//                    }
-//                }
-//            }
-//        }
-        
-        // 1
-//         if settings?.enableGif ?? false && selections.count == 0 {
-//            var isGif = false
-//            DispatchQueue.global().async() {
-//                let resourceList = PHAssetResource.assetResources(for: asset)
-//                for (_, resource) in resourceList.enumerated() {
-//                    if (resource.uniformTypeIdentifier == "com.compuserve.gif") {
-//                        isGif = true
-//                        break
-//                    }
-//                }
-//                DispatchQueue.main.async() {
-//                    cell.hiddenGif = !isGif
-//                }
-//            }
-//         }
         
         UIView.setAnimationsEnabled(true)
         
@@ -167,66 +134,5 @@ final class PhotoCollectionViewDataSource : NSObject, UICollectionViewDataSource
     private func assetsAtIndexPaths(_ indexPaths: [IndexPath]) -> [PHAsset] {
         let assets = indexPaths.map{assetAtIndexPath($0)}
         return assets
-    }
-    
-    //MARK: - Asset Caching
-    
-    func stopCachedAssetes() {
-        photosManager.stopCachingImagesForAllAssets()
-        previousPreheatRect = CGRect.zero
-    }
-    
-    func updateCachedAssets(_ collectionView: UICollectionView) {
-        // The preheat window is twice the height of the visible rect.
-        let visibleRect = CGRect(origin: collectionView.contentOffset, size: collectionView.bounds.size)
-        let preheatRect = visibleRect.insetBy(dx: 0, dy: -0.5 * visibleRect.height)
-        
-        // Update only if the visible area is significantly different from the last preheated area.
-        let delta = abs(preheatRect.midY - previousPreheatRect.midY)
-        guard delta > UIScreen.main.bounds.size.height / 3 else { return }
-        
-        // Compute the assets to start caching and to stop caching.
-        let (addedRects, removedRects) = differencesBetweenRects(previousPreheatRect, preheatRect)
-        let addedAssets = addedRects
-            .flatMap { rect in collectionView.indexPathsForElements(in: rect) }
-            .map { indexPath in fetchResult.object(at: indexPath.item) }
-        let removedAssets = removedRects
-            .flatMap { rect in collectionView.indexPathsForElements(in: rect) }
-            .map { indexPath in fetchResult.object(at: indexPath.item) }
-        
-        // Update the assets the PHCachingImageManager is caching.
-        photosManager.startCachingImages(for: addedAssets,
-                                        targetSize: imageSize, contentMode: imageContentMode, options: nil)
-        photosManager.stopCachingImages(for: removedAssets,
-                                       targetSize: imageSize, contentMode: imageContentMode, options: nil)
-        
-        // Store the preheat rect to compare against in the future.
-        previousPreheatRect = preheatRect
-    }
-    
-    fileprivate func differencesBetweenRects(_ old: CGRect, _ new: CGRect) -> (added: [CGRect], removed: [CGRect]) {
-        if old.intersects(new) {
-            var added = [CGRect]()
-            if new.maxY > old.maxY {
-                added += [CGRect(x: new.origin.x, y: old.maxY,
-                                 width: new.width, height: new.maxY - old.maxY)]
-            }
-            if old.minY > new.minY {
-                added += [CGRect(x: new.origin.x, y: new.minY,
-                                 width: new.width, height: old.minY - new.minY)]
-            }
-            var removed = [CGRect]()
-            if new.maxY < old.maxY {
-                removed += [CGRect(x: new.origin.x, y: new.maxY,
-                                   width: new.width, height: old.maxY - new.maxY)]
-            }
-            if old.minY < new.minY {
-                removed += [CGRect(x: new.origin.x, y: old.minY,
-                                   width: new.width, height: new.minY - old.minY)]
-            }
-            return (added, removed)
-        } else {
-            return ([new], [old])
-        }
     }
 }
