@@ -168,7 +168,7 @@ final class PhotosViewController : UICollectionViewController {
     }
     
     // MARK: Button actions
-    func cancelButtonPressed(_ sender: UIBarButtonItem) {
+    @objc func cancelButtonPressed(_ sender: UIBarButtonItem) {
         guard let closure = cancelClosure, let photosDataSource = photosDataSource else {
             dismiss(animated: true, completion: nil)
             return
@@ -180,7 +180,7 @@ final class PhotosViewController : UICollectionViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    func doneButtonPressed(_ sender: UIBarButtonItem) {
+    @objc func doneButtonPressed(_ sender: UIBarButtonItem) {
         guard let photosDataSource = photosDataSource else {
             dismiss(animated: true, completion: nil)
             return
@@ -189,7 +189,7 @@ final class PhotosViewController : UICollectionViewController {
         finishWithAssets(photosDataSource.selections)
     }
     
-    func albumButtonPressed(_ sender: UIButton) {
+    @objc func albumButtonPressed(_ sender: UIButton) {
         guard let popVC = albumsViewController.popoverPresentationController else {
             return
         }
@@ -205,7 +205,7 @@ final class PhotosViewController : UICollectionViewController {
         present(albumsViewController, animated: true, completion: nil)
     }
     
-    func collectionViewLongPressed(_ sender: UIGestureRecognizer) {
+    @objc func collectionViewLongPressed(_ sender: UIGestureRecognizer) {
         if sender.state == .began {
             // Disable recognizer while we are figuring out location and pushing preview
             sender.isEnabled = false
@@ -268,11 +268,11 @@ final class PhotosViewController : UICollectionViewController {
             doneBarButton = tempDoneButtonItem
             
             if (photosDataSource.selections.count == 1 && self.settings.maxNumberOfSelections == 1) {
-                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle ?? "Done")", forState: UIControlState())
+                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle ?? "Done")", forState: UIControl.State())
             } else if photosDataSource.selections.count > 0 {
-                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle ?? "Done") (\(photosDataSource.selections.count))", forState: UIControlState())
+                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle ?? "Done") (\(photosDataSource.selections.count))", forState: UIControl.State())
             } else {
-                btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControlState())
+                btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControl.State())
             }
             
             // Enabled?
@@ -283,7 +283,7 @@ final class PhotosViewController : UICollectionViewController {
                     if let btn = view as? UIButton , checkIfRightButtonItem(btn) {
                         // Store original title if we havn't got it
                         if doneBarButtonTitle == nil {
-                            doneBarButtonTitle = btn.title(for: UIControlState())
+                            doneBarButtonTitle = btn.title(for: UIControl.State())
                         }
                         
                         // Update title
@@ -291,11 +291,11 @@ final class PhotosViewController : UICollectionViewController {
                             // Special case if we have selected 1 image and that is
                             // the max number of allowed selections
                             if (photosDataSource.selections.count == 1 && self.settings.maxNumberOfSelections == 1) {
-                                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle)", forState: UIControlState())
+                                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle)", forState: UIControl.State())
                             } else if photosDataSource.selections.count > 0 {
-                                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle) (\(photosDataSource.selections.count))", forState: UIControlState())
+                                btn.bs_setTitleWithoutAnimation("\(doneBarButtonTitle) (\(photosDataSource.selections.count))", forState: UIControl.State())
                             } else {
-                                btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControlState())
+                                btn.bs_setTitleWithoutAnimation(doneBarButtonTitle, forState: UIControl.State())
                             }
                             
                             // Enabled?
@@ -504,7 +504,7 @@ extension PhotosViewController: UIPopoverPresentationControllerDelegate {
 }
 // MARK: UINavigationControllerDelegate
 extension PhotosViewController: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if operation == .push {
             return expandAnimator
         } else {
@@ -552,8 +552,8 @@ extension PhotosViewController {
 
 // MARK: UIImagePickerControllerDelegate
 extension PhotosViewController: UIImagePickerControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
             picker.dismiss(animated: true, completion: nil)
             return
         }

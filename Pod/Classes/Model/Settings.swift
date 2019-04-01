@@ -33,14 +33,14 @@ final class Settings : BSImagePickerSettings {
     var selectionShadowColor: UIColor = UIColor.black
     var statusBarStyle: UIStatusBarStyle = .lightContent
     var dismissWhenFinished: Bool = true
-    var selectionTextAttributes: [String: AnyObject] = {
+    var selectionTextAttributes: [NSAttributedString.Key: AnyObject] = {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byTruncatingTail
         paragraphStyle.alignment = .center
         return [
-            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 10.0),
-            NSParagraphStyleAttributeName: paragraphStyle,
-            NSForegroundColorAttributeName: UIColor.white
+            NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10.0),
+            NSAttributedString.Key.paragraphStyle: paragraphStyle,
+            NSAttributedString.Key.foregroundColor: UIColor.white
         ]
     }()
     var backgroundColor: UIColor = UIColor.white

@@ -50,7 +50,7 @@ final class PreviewViewController : UIViewController {
         super.loadView()
     }
     
-    func toggleFullscreen() {
+    @objc func toggleFullscreen() {
         fullscreen = !fullscreen
         UIView.animate(withDuration: 0.3, animations: { () -> Void in
             self.toggleNavigationBar()

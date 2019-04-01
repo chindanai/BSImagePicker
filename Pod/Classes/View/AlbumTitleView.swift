@@ -34,7 +34,7 @@ open class AlbumTitleView: UIView {
         didSet {
             if let imageView = self.albumButton?.imageView, let titleLabel = self.albumButton?.titleLabel {
                 // Set title on button
-                albumButton?.setTitle(self.albumTitle, for: UIControlState())
+                albumButton?.setTitle(self.albumTitle, for: UIControl.State())
                 
                 // Also set title directly to label, since it isn't done right away when setting button title
                 // And we need to know its width to calculate insets
@@ -52,7 +52,7 @@ open class AlbumTitleView: UIView {
         super.awakeFromNib()
         
         // Set image
-        albumButton?.setImage(arrowDownImage, for: UIControlState())
+        albumButton?.setImage(arrowDownImage, for: UIControl.State())
     }
     
     lazy var arrowDownImage: UIImage? = {
