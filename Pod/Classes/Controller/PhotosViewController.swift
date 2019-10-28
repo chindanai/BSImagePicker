@@ -72,6 +72,7 @@ final class PhotosViewController : UICollectionViewController {
     fileprivate var doneBarButtonTitle: String?
     
     fileprivate var isDecelerating = false
+    fileprivate var doneButtonColor: UIColor?
     
     lazy var albumsViewController: AlbumsViewController = {
         let storyboard = UIStoryboard(name: "Albums", bundle: BSImagePickerViewController.bundle)
@@ -133,6 +134,9 @@ final class PhotosViewController : UICollectionViewController {
         doneBarButton?.action = #selector(PhotosViewController.doneButtonPressed(_:))
         cancelBarButton?.target = self
         cancelBarButton?.action = #selector(PhotosViewController.cancelButtonPressed(_:))
+        
+        doneButtonColor = doneBarButton?.tintColor
+        
         albumTitleView?.albumButton?.addTarget(self, action: #selector(PhotosViewController.albumButtonPressed(_:)), for: .touchUpInside)
         navigationItem.leftBarButtonItem = cancelBarButton
         navigationItem.rightBarButtonItem = doneBarButton
@@ -259,7 +263,7 @@ final class PhotosViewController : UICollectionViewController {
             let btn = UIButton(type: .custom)
             btn.addTarget(self, action: #selector(PhotosViewController.doneButtonPressed(_:)), for: .touchUpInside)
             btn.setTitle(doneBarButtonTitle, for: .normal)
-            btn.setTitleColor(navigationController?.navigationBar.tintColor ?? UIColor.red, for: .normal)
+            btn.setTitleColor(doneButtonColor ?? navigationController?.navigationBar.tintColor ?? UIColor.red, for: .normal)
             btn.setTitleColor(UIColor.lightGray, for: .disabled)
             
             let tempDoneButtonItem = UIBarButtonItem(customView: btn)
