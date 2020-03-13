@@ -427,7 +427,7 @@ extension PhotosViewController {
 
             // Get indexPaths of selected items
             let selectedIndexPaths = photosDataSource.selections.flatMap({ (asset) -> IndexPath? in
-                let index = photosDataSource.fetchResult.index(of: asset)
+                let index = (photosDataSource.fetchResult.count - photosDataSource.fetchResult.index(of: asset)) - 1
                 guard index != NSNotFound else { return nil }
                 return IndexPath(item: index, section: photoDatasourceSection)
             })
